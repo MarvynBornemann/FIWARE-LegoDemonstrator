@@ -10,25 +10,26 @@
 
 class Force_Sensor
 {
-    int pinForceSensor1; //Pin of Force Sensor 1
-    int pinForceSensor2; //Pin of Force Sensor 2
+    private:
+        int pinForceSensor1; //Pin of Force Sensor 1
+        int pinForceSensor2; //Pin of Force Sensor 2
 
-    int valueFS1 = 0;
-    int valueFS2 = 0;
+        int valueFS1 = 0;
+        int valueFS2 = 0;
 
-    float alpha; //moving avarage parameter
-    int movingAvarageFS1 = 0;
-    int movingAvarageFS2 = 0;
-    int movingAvarageTotal = 0;
+        float alpha; //moving avarage parameter
+        int movingAvarageFS1 = 0;
+        int movingAvarageFS2 = 0;
+        int movingAvarageTotal = 0;
 
-    int weightClass = 0;
+        int weightClass = 0;
 
-public:
-    Force_Sensor(int pinForceSensor1,int pinForceSensor2);
-    Force_Sensor(int pinForceSensor1,int pinForceSensor2, float alpha);
-    void read();
-    int calculateAvarage();
-    int getWeightClass();
-    int getAvarageOfForceSensor1();
-    int getAvarageOfForceSensor2();
+    public:
+        Force_Sensor(int pinForceSensor1,int pinForceSensor2);
+        Force_Sensor(int pinForceSensor1,int pinForceSensor2, float alpha);
+        void read();
+        int calculateAvarage();
+        int getWeightClass();
+        int getAvarageOfForceSensor1();
+        int getAvarageOfForceSensor2();
 };

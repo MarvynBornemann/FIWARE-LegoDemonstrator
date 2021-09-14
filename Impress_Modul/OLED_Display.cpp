@@ -1,0 +1,68 @@
+#include "OLED_Display.h"
+
+OLED_Display::OLED_Display() {
+    u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, U8X8_PIN_NONE);
+}
+
+OLED_Display::~OLED_Display() {
+    delete u8g2;
+}
+
+void OLED_Display::setup() {
+    u8g2->begin();
+}
+
+void OLED_Display::prepare() {
+    u8g2->setFont(u8g2_font_6x10_tf);
+    u8g2->setFontRefHeightExtendedText();
+    u8g2->setDrawColor(1);
+    u8g2->setFontPosTop();
+    u8g2->setFontDirection(0);
+}
+
+void OLED_Display::display(int movingAvarageTotal, int weightClass, int AvarageOfForceSensor1, int AvarageOfForceSensor2) {
+    //clear and prepare Display
+    u8g2->clearBuffer();
+    prepare();
+
+    //int to string
+    float weight = movingAvarageTotal/100.0;
+    String stringWeight = String(weight, 2);
+    stringWeight = String(stringWeight + " t");
+    String stringWeightClass = String(weightClass);
+    String stringAvarageOfForceSensor1 = String(AvarageOfForceSensor1);
+    String stringAvarageOfForceSensor2 = String(AvarageOfForceSensor2);
+
+    String price = "9";
+    //calculate Price
+    if(weightClass == 1) price = "29";
+    else if(weightClass == 2) price = "49";
+    else if(weightClass == 3) price = "89";
+    else if (weightClass == 4) price = "129";
+
+    //draw Data on display
+    u8g2->drawStr(0, 2, "Price: ");
+    u8g2->drawStr(80, 2, price.c_str());
+    u8g2->drawStr(110, 2, "/h");
+
+    u8g2->drawStr(0, 15, "Weight Class");
+    u8g2->drawStr(80, 15, stringWeightClass.c_str());
+
+    u8g2->drawStr(0, 28, "Weight:");
+    u8g2->drawStr(80, 28, stringWeight.c_str());
+
+    u8g2->drawStr(0, 41, "Sensor 1:");
+    u8g2->drawStr(80, 41, stringAvarageOfForceSensor1.c_str());
+
+    u8g2->drawStr(0, 54, "Sensor 2:");
+    u8g2->drawStr(80, 54, stringAvarageOfForceSensor2.c_str());
+
+    u8g2->setFont(u8g2_font_unifont_t_symbols);
+    u8g2->setFontPosTop();
+    u8g2->setFontDirection(0);
+    u8g2->drawUTF8(100, 0, "€");
+
+    
+    //update Display
+    u8g2->sendBuffer();
+}

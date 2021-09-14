@@ -1,4 +1,5 @@
 #include "Force_Sensor.h"
+#include "OLED_Display.h"
 
 #define FORCE_SENSOR1_PIN 34
 #define FORCE_SENSOR2_PIN 35
@@ -14,9 +15,12 @@ int weightClass = 0;
 
 Force_Sensor forceSensor(FORCE_SENSOR1_PIN, FORCE_SENSOR2_PIN, alpha);
 
+OLED_Display oledDisplay;
+
 
 void setup() {
-    Serial.begin(115200); 
+    //Serial.begin(115200);
+    oledDisplay.setup();
 }
 
 void loop() {
@@ -31,16 +35,14 @@ void loop() {
 
     weightClass = forceSensor.getWeightClass();
 
-    // Serial.print("Sensor 1: ");
-    // Serial.print(val_fs1);
-    // Serial.print("   Sensor 2: ");
-    // Serial.print(val_fs2);
-    Serial.print("Classified: ");
-    Serial.print(weightClass);
-    Serial.print("   Mov_Avg Total: ");
-    Serial.print(movingAvarageTotal);
-    Serial.print("   Mov_Avg 1: ");
-    Serial.print(forceSensor.getAvarageOfForceSensor1());
-    Serial.print("   Mov_Avg 2: ");
-    Serial.println(forceSensor.getAvarageOfForceSensor2());
+    // Serial.print("Classified: ");
+    // Serial.print(weightClass);
+    // Serial.print("   Mov_Avg Total: ");
+    // Serial.print(movingAvarageTotal);
+    // Serial.print("   Mov_Avg 1: ");
+    // Serial.print(forceSensor.getAvarageOfForceSensor1());
+    // Serial.print("   Mov_Avg 2: ");
+    // Serial.println(forceSensor.getAvarageOfForceSensor2());
+
+    oledDisplay.display(movingAvarageTotal, weightClass,forceSensor.getAvarageOfForceSensor1(),forceSensor.getAvarageOfForceSensor2());
 }
