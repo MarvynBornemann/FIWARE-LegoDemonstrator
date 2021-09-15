@@ -2,6 +2,9 @@
 
 OLED_Display::OLED_Display() {
     u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, U8X8_PIN_NONE);
+    for(int i = 0; i < NUMBER_OF_LINES; i++){
+        stringBuffer[i] = String("");
+    }
 }
 
 OLED_Display::~OLED_Display() {
@@ -20,13 +23,12 @@ void OLED_Display::prepare() {
     u8g2->setFontDirection(0);
 }
 
-void OLED_Display::display(int movingAvarageTotal, int weightClass, int AvarageOfForceSensor1, int AvarageOfForceSensor2) {
+void OLED_Display::display(float weight, int weightClass, int AvarageOfForceSensor1, int AvarageOfForceSensor2) {
     //clear and prepare Display
     u8g2->clearBuffer();
     prepare();
 
     //int to string
-    float weight = movingAvarageTotal/100.0;
     String stringWeight = String(weight, 2);
     stringWeight = String(stringWeight + " t");
     String stringWeightClass = String(weightClass);
@@ -63,6 +65,25 @@ void OLED_Display::display(int movingAvarageTotal, int weightClass, int AvarageO
     u8g2->drawUTF8(100, 0, "€");
 
     
+    //update Display
+    u8g2->sendBuffer();
+}
+
+void OLED_Display::println(String string) {
+    //clear and prepare Display
+    u8g2->clearBuffer();
+    prepare();
+
+    //append to String Buffer
+    stringBuffer[bufferIndex] = string;
+
+    for(int i = 0; i < NUMBER_OF_LINES; i++){
+        u8g2->drawStr(0, 2 + i*13, stringBuffer[(NUMBER_OF_LINES-i + bufferIndex)%NUMBER_OF_LINES].c_str());
+    }
+
+    bufferIndex++;
+    if(bufferIndex == NUMBER_OF_LINES) bufferIndex = 0;
+
     //update Display
     u8g2->sendBuffer();
 }
