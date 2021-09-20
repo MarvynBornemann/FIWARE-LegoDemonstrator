@@ -75,6 +75,7 @@ void MQTT::WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
 void MQTT::initMQTT() {
     client.setServer(mqtt_server,1883);
     client.setCallback(mqtt_callback);
+    Serial.println("Initialized MQTT");
 }
 
 void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
