@@ -19,6 +19,9 @@ extern void mqttCallback(String topic);
 class MQTT
 {
     private:
+        //WiFi
+        const char* wifi_ssid;
+        const char* wifi_password;
         //MQTT server
         const char* mqtt_server;
         const char* mqtt_username;
