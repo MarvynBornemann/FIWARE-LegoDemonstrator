@@ -80,6 +80,15 @@ bool LED_Strip::repeat(int numberOfRepeat){
 }
 
 // Some functions of our own for creating animated effects -----------------
+void LED_Strip::setColor(uint8_t r, uint8_t g, uint8_t b) {
+    strip->clear();
+    for(int i=0; i<strip->numPixels(); i++) {
+        strip->setPixelColor(i, strip->Color(r, g, b));         //  Set pixel's color (in RAM)
+    }
+    strip->show();
+}
+
+// Some functions of our own for creating animated effects -----------------
 void LED_Strip::plainColor(uint32_t color, int wait, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {

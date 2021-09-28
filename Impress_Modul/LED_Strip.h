@@ -30,6 +30,8 @@ class LED_Strip
         void setup();
         void loop();
 
+        void setColor(uint8_t r, uint8_t g, uint8_t b);
+
         void plainColor(uint32_t color, int wait,int numberOfRepeat = 1);
         void colorWipe(uint32_t color, int wait, int numberOfRepeat = 1);
         void theaterChase(uint32_t color, int wait, int numberOfRepeat = 1);

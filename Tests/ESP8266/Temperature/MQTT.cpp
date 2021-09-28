@@ -2,7 +2,15 @@
 
 //---------------public-----------------------
 
-MQTT::MQTT(const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, const char* mqtt_client_id){
+MQTT::MQTT(const char* wifi_ssid,
+ const char* wifi_password, 
+ const char* mqtt_server, 
+ const char* mqtt_username, 
+ const char* mqtt_password, 
+ const char* mqtt_client_id)
+{
+    this->wifi_ssid = wifi_ssid;
+    this->wifi_password = wifi_password;
     this->mqtt_server = mqtt_server;
     this->mqtt_username = mqtt_username;
     this->mqtt_password = mqtt_password;
@@ -13,8 +21,9 @@ void MQTT::setup() {
     initWiFi();
     while(WiFi.status() != WL_CONNECTED){
         delay(500);
-        Serial.println("...");
+        Serial.print(".");
     }
+    Serial.println("");
     Serial.println("WiFi connected!");
     initMQTT();
 }
@@ -45,49 +54,28 @@ void MQTT::initWiFi() {
 
     WiFi.setAutoReconnect(true);
 
-    // WiFi.onEvent(WiFiStationConnected, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED);
-    // WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
-    // WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
 
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
+    WiFi.begin(wifi_ssid, wifi_password);
     
     Serial.println("");
-    Serial.println("Wait for WiFi... ");
+    Serial.print("Wait for WiFi...");
 }
 
-// void MQTT::WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-//     Serial.println("Connected to WiFi successfully!");
-// }
-
-// void MQTT::WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-//     Serial.println("WiFi connected");
-//     Serial.println(WiFi.localIP());
-//     Serial.println("IP address: ");
-// }
-
-// void MQTT::WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-//     Serial.println("Disconnected from WiFi access point");
-//     Serial.println("WiFi lost connection. Reason: ");
-//     Serial.println(String(info.disconnected.reason));
-//     Serial.println("Trying to Reconnect");
-//     WiFi.begin(ssid, password);
-// }
 
 //MQTT
 void MQTT::initMQTT() {
     client.setServer(mqtt_server,1883);
     client.setCallback(mqtt_callback);
-    Serial.println("Initialized MQTT");
+    Serial.println("Initialized MQTT!");
 }
 
 void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
     String messageTemp = "";
-    String responseMessage = ""; 
     
-    Serial.println("Message arrived on topic: ");
+    Serial.print("Message arrived on topic: ");
     Serial.println(String(topic));
-    Serial.println(" . Message: ");
+    Serial.print("Message: ");
 
     for (int i = 0; i < length; i++) {
         messageTemp += (char)message[i];

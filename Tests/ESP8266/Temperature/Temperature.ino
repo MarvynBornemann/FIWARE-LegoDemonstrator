@@ -6,15 +6,15 @@
 #define DHTTYPE DHT11
 
 //Connection variables
-const char* ssid = "FIWARE";
-const char* password = "!FIWARE!on!air!";
+const char* wifi_ssid = "FIWARE_fair";
+const char* wifi_password = "!FIWARE!on!air!";
 
-const char* mqtt_server = "192.168.20.56";
+const char* mqtt_server = "192.168.1.100";
 const char* mqtt_username = "LegoDemonstrator";
-const char* mqtt_password = "LegoDemonstrator1234";
+const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "ESP8266Temperature001";
 
-const char* mqtt_temperature_topic = "/mqtt-key/temperature001/attrs";
+const char* mqtt_temperature_topic = "/idFZy8D9KzFko7db/temperature001/attrs";
 
 
 //DHT 11
@@ -23,7 +23,7 @@ DHT dht(DHTPIN, DHTTYPE);
 //MQTT
 WiFiClient espClient;
 PubSubClient client(espClient);
-MQTT mqtt(mqtt_server, mqtt_username, mqtt_password, mqtt_client_id);
+MQTT mqtt(wifi_ssid, wifi_password, mqtt_server, mqtt_username, mqtt_password, mqtt_client_id);
 
 void mqttCallback(String topic){
   Serial.println(topic);

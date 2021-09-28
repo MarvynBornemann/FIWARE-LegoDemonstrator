@@ -2,19 +2,39 @@
 
 //---------------public-----------------------
 
-MQTT::MQTT() {
-}
-
-MQTT::~MQTT() {
+MQTT::MQTT(const char* wifi_ssid,
+    const char* wifi_password, 
+    const char* mqtt_server, 
+    const char* mqtt_username, 
+    const char* mqtt_password, 
+    const char* mqtt_client_id)
+{
+    this->wifi_ssid = wifi_ssid;
+    this->wifi_password = wifi_password;
+    this->mqtt_server = mqtt_server;
+    this->mqtt_username = mqtt_username;
+    this->mqtt_password = mqtt_password;
+    this->mqtt_client_id = mqtt_client_id;
 }
 
 void MQTT::setup() {
     initWiFi();
+    int i = 0;
     while(WiFi.status() != WL_CONNECTED){
         delay(500);
+        Serial.print(".");
         oledDisplay.println("...");
+        if(i++ > 20) break;
     }
-    oledDisplay.println("WiFi connected!");
+    if(WiFi.status() == WL_CONNECTED){
+        oledDisplay.println("WiFi connected!");
+        Serial.println("");
+        Serial.println("WiFi connected!");
+    }else{
+        oledDisplay.println("WiFi is not connected!");
+        Serial.println("");
+        Serial.println("WiFi is not connected!");
+    }
     initMQTT();
 }
 
@@ -24,13 +44,15 @@ void MQTT::loop() {
 }
 
 void MQTT::send(const char* topic, const char* sensor, float measurement) {
-    String responseMessage = ""; 
-    jsonDoc.clear();
+    if(client.connected()){
+        String responseMessage = ""; 
+        jsonDoc.clear();
 
-    jsonDoc[sensor] = measurement;
-    serializeJson(jsonDoc, responseMessage);
+        jsonDoc[sensor] = measurement;
+        serializeJson(jsonDoc, responseMessage);
 
-    client.publish(topic, responseMessage.c_str());
+        client.publish(topic, responseMessage.c_str());
+    }
 }
 
 //-------------private-------------------------
@@ -42,49 +64,30 @@ void MQTT::initWiFi() {
 
     delay(100);
 
-    WiFi.onEvent(WiFiStationConnected, WiFiEvent_t::SYSTEM_EVENT_STA_CONNECTED);
-    WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
-    WiFi.onEvent(WiFiStationDisconnected, WiFiEvent_t::SYSTEM_EVENT_STA_DISCONNECTED);
+    WiFi.setAutoReconnect(true);
 
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
+    WiFi.begin(wifi_ssid, wifi_password);
     
     oledDisplay.println("");
     oledDisplay.println("Wait for WiFi... ");
-}
-
-void MQTT::WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.println("Connected to WiFi successfully!");
-}
-
-void MQTT::WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.println("WiFi connected");
-    Serial.println(String(WiFi.localIP()));
-    Serial.println("IP address: ");
-}
-
-void MQTT::WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info) {
-    Serial.println("Disconnected from WiFi access point");
-    Serial.println("WiFi lost connection. Reason: ");
-    Serial.println(String(info.disconnected.reason));
-    Serial.println("Trying to Reconnect");
-    WiFi.begin(ssid, password);
+    Serial.println("");
+    Serial.print("Wait for WiFi...");
 }
 
 //MQTT
 void MQTT::initMQTT() {
     client.setServer(mqtt_server,1883);
     client.setCallback(mqtt_callback);
-    Serial.println("Initialized MQTT");
+    Serial.println("Initialized MQTT!");
 }
 
 void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
     String messageTemp = "";
-    String responseMessage = ""; 
     
-    Serial.println("Message arrived on topic: ");
+    Serial.print("Message arrived on topic: ");
     Serial.println(String(topic));
-    Serial.println(" . Message: ");
+    Serial.print("Message: ");
 
     for (int i = 0; i < length; i++) {
         messageTemp += (char)message[i];
@@ -94,60 +97,44 @@ void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
     jsonDoc.clear();
     auto error = deserializeJson(jsonDoc, messageTemp);
     if (error) {
-        Serial.println(String(F("deserializeJson() failed with code ")));
+        Serial.println("deserializeJson() failed with code ");
         Serial.println(error.c_str());
         return;
     }
 
-    if(String(topic) == mqtt_LED_cmd_topic){
-        String LED_on = jsonDoc["on"];
-        String LED_off = jsonDoc["off"];
-        Serial.println("LED_on: ");
-        Serial.println(LED_on);
-        Serial.println("LED_off: ");
-        Serial.println(LED_off);
-
-        if(LED_on != "null"){
-            if(LED_on == ""){
-                jsonDoc["on"] = "LED is on!";
-            }
-            else{
-                jsonDoc["on"] = "Message body should be empty !";
-            }
-            serializeJson(jsonDoc, responseMessage);
-            client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
-            }
-            else if(LED_off != "null"){
-            if(LED_off == ""){
-                jsonDoc["off"] = "LED is off!";
-            }
-            else{
-                jsonDoc["off"] = "Message body should be empty !";
-            }
-            serializeJson(jsonDoc, responseMessage);
-            client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
-        }
-    }
-
+    mqttCallback(String(topic));
 }
 
 void MQTT::mqtt_reconnect() {
-    while(!client.connected()){
+    long currentTime = millis();
+    if(!client.connected() && currentTime - lastTime > 120000){
+        lastTime = currentTime;
+
         oledDisplay.println("Connecting MQTT ...");
+        Serial.println("Connecting MQTT ...");
         if (client.connect(mqtt_client_id, mqtt_username, mqtt_password)) {
             oledDisplay.println("MQTT connected!");
+            Serial.println("MQTT connected!");
             // Subscribe
-            client.subscribe(mqtt_LED_cmd_topic);
-            client.subscribe(mqtt_LED_cmdexe_topic);
-            client.subscribe(mqtt_weight_topic);
+            for(auto topic = topics.begin(); topic != topics.end(); ++topic){
+                client.subscribe(*topic);
+            }
             delay(1000);
         } else {
-            delay(500);
+            delay(100);
             oledDisplay.println(String("failed, rc=" + String(client.state())));
-            delay(500);
-            oledDisplay.println("try again in 5 sec");
+            Serial.println(String("failed, rc=" + String(client.state())));
+            delay(100);
+            oledDisplay.println("try again in 120 sec");
+            oledDisplay.println("");
+            oledDisplay.println("");
+            Serial.println("try again in 120 sec");
             // Wait 5 seconds before retrying
-            delay(5000);
+            delay(1000);
         }
     }
+}
+
+void MQTT::subscribe(const char* topic){
+    topics.push_back(topic);
 }

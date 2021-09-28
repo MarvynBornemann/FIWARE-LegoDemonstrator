@@ -7,9 +7,6 @@
 #include <ArduinoJson.h>
 #include <vector>
 
-//WiFi
-extern const char* ssid;
-extern const char* password;
 
 //JSON
 extern DynamicJsonDocument jsonDoc;
@@ -33,9 +30,6 @@ class MQTT
 
         //WiFi
         void initWiFi();
-        // static void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info);
-        // static void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
-        // static void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
 
         //MQTT
         void initMQTT();
@@ -43,8 +37,14 @@ class MQTT
         void mqtt_reconnect();
 
     public:
-        MQTT(const char* mqtt_server, const char* mqtt_username, const char* mqtt_password, const char* mqtt_client_id);
-
+        MQTT(const char* wifi_ssid, 
+            const char* wifi_password, 
+            const char* mqtt_server, 
+            const char* mqtt_username, 
+            const char* mqtt_password, 
+            const char* mqtt_client_id
+        );
+        
         void subscribe(const char* topic);
 
         void setup();

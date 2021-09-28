@@ -5,26 +5,16 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <vector>
 
 #include "OLED_Display.h"
-
-extern const char* ssid;
-extern const char* password;
-
-extern const char* mqtt_server;
-extern const char* mqtt_username;
-extern const char* mqtt_password;
-extern const char* mqtt_client_id;
-
-extern const char* mqtt_LED_cmd_topic;
-extern const char* mqtt_LED_cmdexe_topic;
-extern const char* mqtt_weight_topic;
 
 //JSON
 extern DynamicJsonDocument jsonDoc;
 
 //MQTT
 extern PubSubClient client;
+extern void mqttCallback(String topic);
 
 //OLED Display
 extern OLED_Display oledDisplay;
@@ -34,19 +24,37 @@ class MQTT
 {
     private:
         //WiFi
+        const char* wifi_ssid;
+        const char* wifi_password;
+        //MQTT server
+        const char* mqtt_server;
+        const char* mqtt_username;
+        const char* mqtt_password;
+        const char* mqtt_client_id;
+
+        //MQTT topics
+        std::vector<const char*> topics;
+
+        //WiFi
         void initWiFi();
-        static void WiFiStationConnected(WiFiEvent_t event, WiFiEventInfo_t info);
-        static void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
-        static void WiFiStationDisconnected(WiFiEvent_t event, WiFiEventInfo_t info);
 
         //MQTT
         void initMQTT();
         static void mqtt_callback(char* topic, byte* message, unsigned int length);
         void mqtt_reconnect();
 
+        long lastTime = 0;
+
     public:
-        MQTT();
-        ~MQTT();
+        MQTT(const char* wifi_ssid, 
+            const char* wifi_password, 
+            const char* mqtt_server, 
+            const char* mqtt_username, 
+            const char* mqtt_password, 
+            const char* mqtt_client_id
+        );
+
+        void subscribe(const char* topic);
 
         void setup();
         void loop();
