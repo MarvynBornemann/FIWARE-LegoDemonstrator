@@ -21,27 +21,29 @@ void LED_Strip::loop(){
     // Fill along the length of the strip in various colors...
     switch(mode){
         case 0:
-            plainColor(strip->Color(255,   255,   255), 1000, 2); // White
             break;
         case 1:
-            colorWipe(strip->Color(255,   0,   0), 50, 2); // Red
+            plainColor(strip->Color(255,   255,   255), 1000, 2); // White
             break;
         case 2:
-            colorWipe(strip->Color(  0, 255,   0), 50, 2); // Green
+            colorWipe(strip->Color(255,   0,   0), 50, 2); // Red
             break;
         case 3:
-            colorWipe(strip->Color(  0,   0, 255), 50, 2); // Blue
+            colorWipe(strip->Color(  0, 255,   0), 50, 2); // Green
             break;
         case 4:
-            rainbow(10, 5);             // Flowing rainbow cycle along the whole strip
+            colorWipe(strip->Color(  0,   0, 255), 50, 2); // Blue
             break;
         case 5:
-            theaterChase(strip->Color(127,   0,   0), 50, 10); // Red, half brightness
+            rainbow(10, 5);             // Flowing rainbow cycle along the whole strip
             break;
         case 6:
+            theaterChase(strip->Color(127,   0,   0), 50, 10); // Red, half brightness
+            break;
+        case 7:
             theaterChase(strip->Color(127, 127, 127), 50, 10); // White, half brightness
             break;
-        case 7: 
+        case 8: 
             theaterChaseRainbow(50, 30); // Rainbow-enhanced theaterChase variant
             break;
         default:
@@ -81,6 +83,7 @@ bool LED_Strip::repeat(int numberOfRepeat){
 
 // Some functions of our own for creating animated effects -----------------
 void LED_Strip::setColor(uint8_t r, uint8_t g, uint8_t b) {
+    setMode(0);
     strip->clear();
     for(int i=0; i<strip->numPixels(); i++) {
         strip->setPixelColor(i, strip->Color(r, g, b));         //  Set pixel's color (in RAM)
@@ -100,7 +103,7 @@ void LED_Strip::plainColor(uint32_t color, int wait, int numberOfRepeat) {
         }
         strip->show();
 
-        if(repeat(numberOfRepeat)) nextMode();
+        //if(repeat(numberOfRepeat)) nextMode();
     }
 }
 
@@ -120,7 +123,7 @@ void LED_Strip::colorWipe(uint32_t color, int wait, int numberOfRepeat) {
         strip->show();                            //  Update strip to match
 
         if(nextPixel()){
-            if(repeat(numberOfRepeat)) nextMode();
+            //if(repeat(numberOfRepeat)) nextMode();
         }
     }
 }
@@ -143,7 +146,7 @@ void LED_Strip::theaterChase(uint32_t color, int wait, int numberOfRepeat) {
         theaterChaseIndex++;
         if(theaterChaseIndex >= 3){
             theaterChaseIndex = 0;
-            if(repeat(numberOfRepeat)) nextMode();
+            //if(repeat(numberOfRepeat)) nextMode();
         }
     }
 }
@@ -163,7 +166,7 @@ void LED_Strip::rainbow(int wait, int numberOfRepeat) {
         rainbowFirstPixelHue += 265;
         if(rainbowFirstPixelHue >= 65536){
             rainbowFirstPixelHue = 0;
-            if(repeat(numberOfRepeat)) nextMode();
+            //if(repeat(numberOfRepeat)) nextMode();
         }
     }
 
@@ -193,7 +196,7 @@ void LED_Strip::theaterChaseRainbow(int wait, int numberOfRepeat) {
         if(theaterChaseIndex >= 3){
             theaterChaseIndex = 0;
             if(repeat(numberOfRepeat)){
-                nextMode();
+                //nextMode();
                 rainbowFirstPixelHue = 0;
             }
         }

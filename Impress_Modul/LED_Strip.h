@@ -4,6 +4,8 @@
 
 #include <Adafruit_NeoPixel.h>
 
+#define NUMBER_OF_LED_MODES 9
+
 class LED_Strip
 {
     private:
@@ -11,7 +13,7 @@ class LED_Strip
         int pixelIndex;
 
         int mode;
-        const int numberOfModes = 8;
+        const int numberOfModes = NUMBER_OF_LED_MODES;
 
         long rainbowFirstPixelHue = 0;
         int theaterChaseIndex = 0;

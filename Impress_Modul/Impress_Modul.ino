@@ -111,7 +111,7 @@ void loop() {
     }
 
     //update LEDs
-    //ledStrip1.loop();
+    ledStrip1.loop();
     //ledStrip2.loop();
     ledStrip2.weldingWork(1000);
     ledPWM.loop();
@@ -124,10 +124,14 @@ void mqttCallback(String topic){
     if(topic == mqtt_LED_cmd_topic){
         String LED_on = jsonDoc["on"];
         String LED_off = jsonDoc["off"];
+        String LED_mode = jsonDoc["mode"];
+
         Serial.print("LED_on: ");
         Serial.println(LED_on);
         Serial.print("LED_off: ");
         Serial.println(LED_off);
+        Serial.print("LED_mode: ");
+        Serial.println(LED_mode);
 
         if(LED_on != "null"){
             if(LED_on == ""){
@@ -143,8 +147,8 @@ void mqttCallback(String topic){
                 String str_b = LED_on.substring(secondCommaIndex + 1);
 
                 int value_r = str_r.toInt();
-                int value_g = str_r.toInt();
-                int value_b = str_r.toInt();
+                int value_g = str_g.toInt();
+                int value_b = str_b.toInt();
 
                 if(value_r >= 0 && value_g >= 0 && value_b >= 0 && value_r <= 255 && value_g <= 255 && value_b <= 255){
                     jsonDoc["on"] = "LED is on with Color" + str_r + "," + str_g + "," + str_b + " !";
@@ -163,6 +167,18 @@ void mqttCallback(String topic){
             }
             else{
                 jsonDoc["off"] = "Message body should be empty !";
+            }
+            serializeJson(jsonDoc, responseMessage);
+            client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
+        }
+        else if(LED_mode != "null"){
+            int LED_mode_int = LED_mode.toInt();
+            if(LED_mode_int >= 0 && LED_mode_int <= NUMBER_OF_LED_MODES){
+                jsonDoc["mode"] = "LED is in mode " + LED_mode;
+                ledStrip1.setMode(LED_mode_int);
+            }
+            else{
+                jsonDoc["mode"] = "Message body is wrong !";
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
