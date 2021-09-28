@@ -23,6 +23,7 @@ class Force_Sensor
         int movingAvarageTotal = 0;
 
         int weightClass = 0;
+        int price = 0;
 
     public:
         Force_Sensor(int pinForceSensor1,int pinForceSensor2);
@@ -30,6 +31,7 @@ class Force_Sensor
         void read();
         int calculateAvarage();
         int getWeightClass();
+        int getPrice();
         int getAvarageOfForceSensor1();
         int getAvarageOfForceSensor2();
 };

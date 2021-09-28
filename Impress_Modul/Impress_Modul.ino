@@ -42,6 +42,7 @@ const char* mqtt_weight_topic = "/idFZy8D9KzFko7db/weight001/attrs";
 long lastTime = 0;
 int movingAvarageTotal = 0;
 int weightClass = 0;
+int price = 0;
 int countForceSensorReadings = 0;
 const int numberOfForceSensorReadings = frequencyOfForceSensorReadings/frequencyOfDisplayWeight;
 Force_Sensor forceSensor(FORCE_SENSOR1_PIN, FORCE_SENSOR2_PIN, alpha);
@@ -96,13 +97,17 @@ void loop() {
         movingAvarageTotal = forceSensor.calculateAvarage();
         float weight = movingAvarageTotal/100.0;
         weightClass = forceSensor.getWeightClass();
+        price = forceSensor.getPrice();
+
 
         //Reconnect to MQTT if disconnected
         mqtt.loop();
 
         //send weight over MQTT and display on OLED-Screen
         mqtt.send(mqtt_weight_topic, "weight", weight);
-        oledDisplay.display(weight, weightClass,forceSensor.getAvarageOfForceSensor1(),forceSensor.getAvarageOfForceSensor2());
+        mqtt.send(mqtt_weight_topic, "weightClass", weightClass);
+        mqtt.send(mqtt_weight_topic, "price", price);
+        oledDisplay.display(weight, weightClass, price, forceSensor.getAvarageOfForceSensor1(),forceSensor.getAvarageOfForceSensor2());
     }
 
     //update LEDs
@@ -130,12 +135,28 @@ void mqttCallback(String topic){
                 ledStrip1.setColor(255,255,255);
             }
             else{
-                jsonDoc["on"] = "Message body should be empty !";
+                int commaIndex = LED_on.indexOf(',');
+                int secondCommaIndex = LED_on.indexOf(',', commaIndex + 1);
+
+                String str_r = LED_on.substring(0, commaIndex);
+                String str_g = LED_on.substring(commaIndex + 1, secondCommaIndex);
+                String str_b = LED_on.substring(secondCommaIndex + 1);
+
+                int value_r = str_r.toInt();
+                int value_g = str_r.toInt();
+                int value_b = str_r.toInt();
+
+                if(value_r >= 0 && value_g >= 0 && value_b >= 0 && value_r <= 255 && value_g <= 255 && value_b <= 255){
+                    jsonDoc["on"] = "LED is on with Color" + str_r + "," + str_g + "," + str_b + " !";
+                    ledStrip1.setColor(value_r,value_g,value_b);
+                }else{
+                    jsonDoc["on"] = "Message body is wrong !";
+                }
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
-            }
-            else if(LED_off != "null"){
+        }
+        else if(LED_off != "null"){
             if(LED_off == ""){
                 jsonDoc["off"] = "LED is off!";
                 ledStrip1.setColor(0,0,0);

@@ -23,7 +23,7 @@ void OLED_Display::prepare() {
     u8g2->setFontDirection(0);
 }
 
-void OLED_Display::display(float weight, int weightClass, int AvarageOfForceSensor1, int AvarageOfForceSensor2) {
+void OLED_Display::display(float weight, int weightClass, int price, int AvarageOfForceSensor1, int AvarageOfForceSensor2) {
     //clear and prepare Display
     u8g2->clearBuffer();
     prepare();
@@ -32,19 +32,15 @@ void OLED_Display::display(float weight, int weightClass, int AvarageOfForceSens
     String stringWeight = String(weight, 2);
     stringWeight = String(stringWeight + " t");
     String stringWeightClass = String(weightClass);
+    String stringPrice = String(price);
     String stringAvarageOfForceSensor1 = String(AvarageOfForceSensor1);
     String stringAvarageOfForceSensor2 = String(AvarageOfForceSensor2);
 
-    String price = "9";
-    //calculate Price
-    if(weightClass == 1) price = "29";
-    else if(weightClass == 2) price = "49";
-    else if(weightClass == 3) price = "89";
-    else if (weightClass == 4) price = "129";
+    
 
     //draw Data on display
     u8g2->drawStr(0, 2, "Price: ");
-    u8g2->drawStr(80, 2, price.c_str());
+    u8g2->drawStr(80, 2, stringPrice.c_str());
     u8g2->drawStr(110, 2, "/h");
 
     u8g2->drawStr(0, 15, "Weight Class");

@@ -107,7 +107,7 @@ void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
 
 void MQTT::mqtt_reconnect() {
     long currentTime = millis();
-    if(!client.connected() && currentTime - lastTime > 120000){
+    if(!client.connected() && currentTime - lastTime > 30000){
         lastTime = currentTime;
 
         oledDisplay.println("Connecting MQTT ...");
@@ -125,10 +125,10 @@ void MQTT::mqtt_reconnect() {
             oledDisplay.println(String("failed, rc=" + String(client.state())));
             Serial.println(String("failed, rc=" + String(client.state())));
             delay(100);
-            oledDisplay.println("try again in 120 sec");
+            oledDisplay.println("try again in 30 sec");
             oledDisplay.println("");
             oledDisplay.println("");
-            Serial.println("try again in 120 sec");
+            Serial.println("try again in 30 sec");
             // Wait 5 seconds before retrying
             delay(1000);
         }

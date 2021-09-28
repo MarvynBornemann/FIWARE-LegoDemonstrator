@@ -44,6 +44,17 @@ int Force_Sensor::getWeightClass()
     return weightClass;
 }
 
+int Force_Sensor::getPrice()
+{   
+    price = 9;
+    //calculate Price
+    if(weightClass == 1) price = 29;
+    else if(weightClass == 2) price = 49;
+    else if(weightClass == 3) price = 89;
+    else if (weightClass == 4) price = 129;
+    return price;
+}
+
 int Force_Sensor::getAvarageOfForceSensor1()
 {
     return movingAvarageFS1;

@@ -26,5 +26,5 @@ class OLED_Display
 
         void println(String string);
 
-        void display(float weight, int weightClass, int AvarageOfForceSensor1, int AvarageOfForceSensor2);
+        void display(float weight, int weightClass, int price, int AvarageOfForceSensor1, int AvarageOfForceSensor2);
 };
