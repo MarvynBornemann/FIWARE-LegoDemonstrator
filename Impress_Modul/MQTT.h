@@ -9,6 +9,8 @@
 
 #include "OLED_Display.h"
 
+#define MQTT_RECONNECT_TIME 120 //in seconds
+
 //JSON
 extern DynamicJsonDocument jsonDoc;
 
