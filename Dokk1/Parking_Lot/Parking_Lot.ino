@@ -10,7 +10,7 @@ const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "Dokk1-ESP8266ParkingLot";
 
-const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/parkingLot/attrs";
+const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/parkingLot001/attrs";
 
 //OLED Display variables
 OLED_Display oledDisplay;
