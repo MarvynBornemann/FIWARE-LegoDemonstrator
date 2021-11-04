@@ -14,7 +14,9 @@ const char* mqtt_particulateMatter_cmd_topic = "/idFZy8D9KzFko7db/particulateMat
 const char* mqtt_particulateMatter_cmdexe_topic = "/idFZy8D9KzFko7db/particulateMatter001/cmdexe";
 
 //OLED Display variables
-OLED_Display oledDisplay;
+const int WIO_NODE_SCL_PIN = 5;
+const int WIO_NODE_SDA_PIN = 4;
+OLED_Display oledDisplay(WIO_NODE_SDA_PIN, WIO_NODE_SCL_PIN);
 
 //MQTT
 WiFiClient espClient;
@@ -25,15 +27,16 @@ MQTT mqtt(wifi_ssid, wifi_password, mqtt_server, mqtt_username, mqtt_password, m
 DynamicJsonDocument jsonDoc(1024);
 
 //variables
-long lastTime = 0;
-bool doOnce = false;
+unsigned long lastTime = 0;
+bool doOnceParticulateMatter = true;
+bool doOnceCarSharing = true;
 
 bool randomizeParticulateMatter = true;
-float particulateMatter = 9.7;
-int priceCarSharing = 0;
-int priceBikeSharing = 0;
+float levelParticulateMatter = 9.7;
+float priceCarSharing = 0;
+float priceBikeSharing = 0;
 
-void setup() {    
+void setup() { 
     Serial.begin(115200);
     oledDisplay.setup();
 
@@ -50,30 +53,60 @@ void loop() {
     if(diffTime > 20000){
         lastTime = currentTime;
 
-        if(randomizeParticulateMatter) particulateMatter = random(200)/10.0;
+        oledDisplay.displayBikeSharing(priceBikeSharing);
 
-        if(particulateMatter > 10){
-            priceCarSharing = 30;
-            priceBikeSharing = 1;
-        }else{
-            priceCarSharing = 12;
-            priceBikeSharing = 3;
-        }
+        doOnceParticulateMatter = true;
+        doOnceCarSharing = true;
+    } else if(diffTime > 15000 && doOnceCarSharing){
+        doOnceCarSharing = false;
 
-        Serial.println("particulateMatter = " + String(particulateMatter));
-        oledDisplay.display(particulateMatter, priceCarSharing, priceBikeSharing);
+        oledDisplay.displayCarSharing(priceCarSharing);
 
-        doOnce = true;
-    } else if(diffTime > 15000 && doOnce){
-        doOnce = false;
-        oledDisplay.drawBitmap();
+    } else if(diffTime > 5000 && doOnceParticulateMatter){
+        doOnceParticulateMatter = false;
+
+        if(randomizeParticulateMatter) levelParticulateMatter = random(200)/10.0;
+
+        calculatePrices();
+
+        Serial.println("Level of Particulate Matter = " + String(levelParticulateMatter));
+        oledDisplay.displayParticulateMatter(levelParticulateMatter);
+    }
+}
+
+void calculatePrices(){
+    if(levelParticulateMatter > 10){
+        priceCarSharing = 27.99;
+        priceBikeSharing = 0.50;
+    }else{
+        priceCarSharing = 11.99;
+        priceBikeSharing = 2.50;
     }
 }
 
 void mqttCallback(String topic){
     Serial.println(topic);
+    String responseMessage = ""; 
+
     //ToDo: change particulate matter through context broker
     if(topic == mqtt_particulateMatter_cmd_topic){
-        randomizeParticulateMatter = false;
+        String level = jsonDoc["level"];
+
+        Serial.print("Level of Particulate Matter = ");
+        Serial.println(level);
+
+        if(level != "null"){
+            float levelAsNumber = level.toFloat();
+            if(levelAsNumber >= 0 && levelAsNumber <= 100){
+                randomizeParticulateMatter = false;
+                jsonDoc["level"] = "Set level to " + level;
+                levelParticulateMatter = levelAsNumber;
+                calculatePrices();
+            }else{
+                randomizeParticulateMatter = true;
+                jsonDoc["level"] = "Got wrong level! Has to be a number between 0 and 100! ";
+            }
+
+        }
     }
 }

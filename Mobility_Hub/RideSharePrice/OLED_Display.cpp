@@ -1,97 +1,92 @@
 #include "OLED_Display.h"
 
-OLED_Display::OLED_Display() {
-    u8g2 = new U8G2_SSD1306_128X64_NONAME_F_HW_I2C(U8G2_R0, U8X8_PIN_NONE, ESP8266_SCL_PIN, ESP8266_SDA_PIN);
-    for(int i = 0; i < NUMBER_OF_LINES; i++){
-        stringBuffer[i] = String("");
-    }
+OLED_Display::OLED_Display(int sdaPin, int sclPin, int screenAdress) {
+    this->sdaPin = sdaPin;
+    this->sclPin = sclPin;
+    this->screenAdress = screenAdress;
+    oledDisplay = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 }
 
 OLED_Display::~OLED_Display() {
-    delete u8g2;
+    delete oledDisplay;
 }
 
 void OLED_Display::setup() {
-    u8g2->begin();
+    Wire.begin(sdaPin, sclPin);
+
+    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+    if(!oledDisplay->begin(SSD1306_SWITCHCAPVCC, screenAdress)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for(;;); // Don't proceed, loop forever
+    }
+
+    // Show initial display buffer contents on the screen --
+    // the library initializes this with an Adafruit splash screen.
+    oledDisplay->display();
 }
 
 void OLED_Display::prepare() {
-    u8g2->setFont(u8g2_font_6x10_tf);
-    u8g2->setFontRefHeightExtendedText();
-    u8g2->setDrawColor(1);
-    u8g2->setFontPosTop();
-    u8g2->setFontDirection(0);
+    oledDisplay->setTextSize(2);
+    oledDisplay->setTextColor(SSD1306_WHITE);
+    oledDisplay->setCursor(0,0);
 }
 
-void OLED_Display::display(float particulateMatter, int priceCarSharing, int priceBikeSharing) {
+void OLED_Display::displayBikeSharing(float priceBikeSharing){
     //clear and prepare Display
-    u8g2->clearBuffer();
+    oledDisplay->clearDisplay();
     prepare();
 
-    //int to string
-    String stringParticulateMatter = String(particulateMatter,1);
-    String stringPriceCarSharing = String(priceCarSharing);
-    String stringPriceBikeSharing = String(priceBikeSharing);
+    oledDisplay->drawBitmap(0, 0, BikeSharing_bits, 64, 64, SSD1306_WHITE);
 
-    //draw Data on display
-    u8g2->drawStr(0, 0, "Particulate Matter");
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
+    oledDisplay->println(" " + String(priceBikeSharing,2));
 
-    u8g2->drawStr(0,12, "Level: ");
-    u8g2->drawStr(60,12, stringParticulateMatter.c_str());
-    u8g2->drawStr(100,12, "g/m3");
-
-    u8g2->drawLine(0, 24, 128, 24);
-
-    u8g2->drawStr(0,26, "Prices: ");
-
-    u8g2->drawStr(0,38, "Car Sharing: ");
-    u8g2->drawStr(90,38, stringPriceCarSharing.c_str());
-    u8g2->drawStr(110,38, "/h");
-
-    u8g2->drawStr(0,50, "Bike Sharing:");
-    u8g2->drawStr(90,50, stringPriceBikeSharing.c_str());
-    u8g2->drawStr(110,50, "/h");
-
-    u8g2->setFont(u8g2_font_unifont_t_symbols);
-    u8g2->setFontPosTop();
-    u8g2->setFontDirection(0);
-    u8g2->drawUTF8(90, 10, "µ");
-    u8g2->drawUTF8(102, 36, "€");
-    u8g2->drawUTF8(102, 48, "€");
+    oledDisplay->drawBitmap(SCREEN_WIDTH/2 + 10,SCREEN_HEIGHT/2 + 10, Euro_bits, 16, 16, SSD1306_WHITE);
+    oledDisplay->setCursor(SCREEN_WIDTH/2 + 30,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->println("/h");
 
     //update Display
-    u8g2->sendBuffer();
+    oledDisplay->display();
 }
 
-void OLED_Display::drawBitmap(){
+void OLED_Display::displayCarSharing(float priceCarSharing){
     //clear and prepare Display
-    u8g2->clearBuffer();
-    //prepare();
-
-    u8g2->setBitmapMode(false /* solid */);
-    u8g2->setDrawColor(1);
-
-    u8g2->drawXBM(0,0,BikeCarSharing_width,BikeCarSharing_height,BikeCarSharing_bits);
-
-    //update Display
-    u8g2->sendBuffer();
-}
-
-void OLED_Display::println(String string) {
-    //clear and prepare Display
-    u8g2->clearBuffer();
+    oledDisplay->clearDisplay();
     prepare();
 
-    //append to String Buffer
-    stringBuffer[bufferIndex] = string;
+    oledDisplay->drawBitmap(0, 0, CarSharing_bits, 64, 64, SSD1306_WHITE);
 
-    for(int i = 0; i < NUMBER_OF_LINES; i++){
-        u8g2->drawStr(0, 2 + i*13, stringBuffer[(NUMBER_OF_LINES-i + bufferIndex)%NUMBER_OF_LINES].c_str());
-    }
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
+    oledDisplay->println(String(priceCarSharing,2));
 
-    bufferIndex++;
-    if(bufferIndex == NUMBER_OF_LINES) bufferIndex = 0;
+    oledDisplay->drawBitmap(SCREEN_WIDTH/2 + 10,SCREEN_HEIGHT/2 + 10, Euro_bits, 16, 16, SSD1306_WHITE);
+    oledDisplay->setCursor(SCREEN_WIDTH/2 + 30,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->println("/h");
 
     //update Display
-    u8g2->sendBuffer();
+    oledDisplay->display();
+}
+
+void OLED_Display::displayParticulateMatter(float particulateMatter){
+    //clear and prepare Display
+    oledDisplay->clearDisplay();
+    prepare();
+
+    oledDisplay->drawBitmap(0, 10, AirQuality_bits, 64, 64, SSD1306_WHITE);
+
+    oledDisplay->setTextSize(1); 
+    oledDisplay->println("Particulate Matter");
+
+    oledDisplay->drawLine(0, 10, SCREEN_WIDTH, 10, SSD1306_WHITE);
+
+    oledDisplay->setTextSize(2); 
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
+    oledDisplay->println(String(particulateMatter,1));
+
+    oledDisplay->drawBitmap(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 14, My_bits, 10, 16, SSD1306_WHITE);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->println(" g/m3");
+
+    //update Display
+    oledDisplay->display();
 }

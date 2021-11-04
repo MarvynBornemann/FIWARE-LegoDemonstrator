@@ -1,0 +1,8 @@
+Convert an image to an cpp-bitmap:
+
+If <Adafruit_SSD1306.h> is used:
+- https://javl.github.io/image2cpp/
+
+If <U8g2lib.h> is used:
+- Open Image in Gimp
+- Export as .xbm
