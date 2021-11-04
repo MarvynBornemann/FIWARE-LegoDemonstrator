@@ -13,7 +13,9 @@ const char* mqtt_client_id = "Dokk1-ESP8266ParkingLot";
 const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/parkingLot001/attrs";
 
 //OLED Display variables
-OLED_Display oledDisplay;
+const int WIO_NODE_SCL_PIN = 4;
+const int WIO_NODE_SDA_PIN = 5;
+OLED_Display oledDisplay(WIO_NODE_SDA_PIN, WIO_NODE_SCL_PIN);
 
 //MQTT
 WiFiClient espClient;
@@ -30,6 +32,8 @@ DynamicJsonDocument jsonDoc(1024);
 //variables
 long lastTime = 0;
 bool doOnce = false;
+
+int numberOfFreeParkingLots = 0;
 
 void setup() {
   //Wio node -> make port available
@@ -51,15 +55,15 @@ void loop() {
   if(diffTime > 10000){
     lastTime = currentTime;
 
-    int numberOfFreeParkingLots = random(1024);
-    oledDisplay.display(numberOfFreeParkingLots);
-
+    numberOfFreeParkingLots = random(1000);
+    
+    oledDisplay.drawBitmap(numberOfFreeParkingLots);
     mqtt.send(mqtt_parkingLot_topic, "parkingLot", numberOfFreeParkingLots);
 
     doOnce = true;
 
   } else if(diffTime > 5000 && doOnce){
     doOnce = false;
-    oledDisplay.drawBitmap();
+    oledDisplay.display();
   }
 }
