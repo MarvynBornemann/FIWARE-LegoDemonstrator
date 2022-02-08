@@ -36,13 +36,13 @@ DynamicJsonDocument jsonDoc(1024);
 void setup() {
     Serial.begin(115200);
 
+    pinMode(WINDMILLS_PIN, OUTPUT);
+    digitalWrite(WINDMILLS_PIN, HIGH); // turn windmills off at startup
+
     mqtt.setup();
     mqtt.subscribe(mqtt_windmills_cmd_topic);
 
     dht.begin();
-
-    pinMode(WINDMILLS_PIN, OUTPUT);
-    digitalWrite(WINDMILLS_PIN, LOW);
 }
 
 void loop() {
