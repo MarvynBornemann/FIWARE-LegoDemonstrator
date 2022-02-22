@@ -38,12 +38,14 @@ class LED_Strip
 
         int repeatIndex = 0;
 
-        bool doOnce = true;
-        int weldingWorkTime = 0;
-
         COLOR color;
 
-        bool nextPixel();
+        bool setStartPixel = true;
+
+        bool colorWipeDoubleFinished1 = false;
+        bool colorWipeDoubleFinished2 = false;
+
+        bool nextPixel(bool direction = false, int startPixel = 0, int endPixel = -1);
         bool repeat(int numberOfRepeat);
 
     public:
@@ -55,10 +57,13 @@ class LED_Strip
 
         void setColor(uint8_t r, uint8_t g, uint8_t b);
         void setColor(COLOR color);
+        int getNumberOfLEDs();
         void clear();
 
-        bool plainColor(int wait,int numberOfRepeat = 1);
-        bool colorWipe(int wait, int numberOfRepeat = 1);
+        bool plainColor(int wait, int numberOfRepeat = 1);
+        bool colorWipe(int wait, bool direction = false, int startPixel = 0, int endPixel = -1, int numberOfRepeat = 1);
+        bool colorWipeDouble(int wait, int startPixel, int endPixel1, int endPixel2, int numberOfRepeat = 1);
+        bool colorWipeOneByOne(int wait, int numberOfRepeat = 1);
         bool theaterChase(int wait, int numberOfRepeat = 1);
         bool rainbow(int wait, int numberOfRepeat = 1);
         bool theaterChaseRainbow(int wait, int numberOfRepeat = 1);

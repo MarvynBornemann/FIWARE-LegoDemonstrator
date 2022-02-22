@@ -58,10 +58,33 @@ void LED_Strip::loop(){
     }
 }
 
-bool LED_Strip::nextPixel(){
-    pixelIndex++;
+bool LED_Strip::nextPixel(bool direction, int startPixel, int endPixel){
+    //next pixel index depending on direction
+    if(direction) pixelIndex--;
+    else pixelIndex++;
+
+    //reset pixel index if end of strip is reached
     if(pixelIndex >= strip->numPixels()){
         pixelIndex = 0;
+    }
+    if(pixelIndex < 0){
+        pixelIndex = strip->numPixels() - 1;
+    }
+
+    //return 1 if startPixel or EndPixel is reached
+    int _endPixel = -1;
+    if(endPixel > -1){
+        if(direction) _endPixel = endPixel - 1;
+        else _endPixel = endPixel + 1;
+        if(_endPixel >= strip->numPixels()){
+            _endPixel = 0;
+        }
+        if(_endPixel < 0){
+            _endPixel = strip->numPixels() - 1;
+        }
+    }
+    if(pixelIndex == startPixel || pixelIndex == _endPixel){
+        setStartPixel = true;
         return 1;
     }
     return 0;
@@ -97,6 +120,10 @@ void LED_Strip::setColor(COLOR color) {
     this->color = color;
 }
 
+int LED_Strip::getNumberOfLEDs(){
+    return strip->numPixels();
+}
+
 void LED_Strip::clear() {
     strip->clear();
     strip->show();
@@ -125,7 +152,77 @@ bool LED_Strip::plainColor(int wait, int numberOfRepeat) {
 // (as a single 'packed' 32-bit value, which you can get by calling
 // strip.Color(red, green, blue) as shown in the loop() function above),
 // and a delay time (in milliseconds) between pixels.
-bool LED_Strip::colorWipe(int wait, int numberOfRepeat) {
+bool LED_Strip::colorWipe(int wait, bool direction, int startPixel, int endPixel, int numberOfRepeat) {
+    long _currentTime = millis();
+    if(_currentTime - _lastTime > wait) {
+        _lastTime = _currentTime;
+
+        //Initial Condition
+        if(setStartPixel){
+            setStartPixel = false;
+            pixelIndex = startPixel;
+        }
+
+        strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+        strip->show();                            //  Update strip to match
+
+        if(nextPixel(direction, startPixel, endPixel)){
+            if(repeat(numberOfRepeat)) return 1;
+        }
+    }
+    return 0;
+}
+
+
+// Fill strip pixels one after another with a color. Strip is NOT cleared
+// first; anything there will be covered pixel by pixel. Pass in color
+// (as a single 'packed' 32-bit value, which you can get by calling
+// strip.Color(red, green, blue) as shown in the loop() function above),
+// and a delay time (in milliseconds) between pixels.
+bool LED_Strip::colorWipeDouble(int wait, int startPixel, int endPixel1, int endPixel2, int numberOfRepeat) {
+    long _currentTime = millis();
+    if(_currentTime - _lastTime > wait) {
+        _lastTime = _currentTime;
+
+        //Initial Condition
+        if(setStartPixel){
+            setStartPixel = false;
+            pixelIndex = 0;
+        }
+
+        //calculate next Pixels
+        int startPixelPlus = (startPixel + pixelIndex) % strip->numPixels();
+        int startPixelMinus = (startPixel - pixelIndex);
+        if(startPixelMinus < 0) startPixelMinus = strip->numPixels() + startPixelMinus;
+
+        if(!colorWipeDoubleFinished1){
+            strip->setPixelColor(startPixelPlus, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+            //check if one endPixel is reached
+            if(startPixelPlus == endPixel1 || startPixelPlus == endPixel2) colorWipeDoubleFinished1 = true;
+        } 
+        if(!colorWipeDoubleFinished2){
+            strip->setPixelColor(startPixelMinus, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+            //check if one endPixel is reached
+            if(startPixelMinus == endPixel1 || startPixelMinus == endPixel2) colorWipeDoubleFinished2 = true;
+        } 
+        strip->show();                            //  Update strip to match
+
+        if(nextPixel() || (colorWipeDoubleFinished1 && colorWipeDoubleFinished2)){
+            colorWipeDoubleFinished1 = false;
+            colorWipeDoubleFinished2 = false;
+            setStartPixel = true;
+            if(repeat(numberOfRepeat)) return 1;
+        }
+    }
+    return 0;
+}
+
+// Fill strip pixels one after another with a color. Strip is NOT cleared
+// first; anything there will be covered pixel by pixel. Pass in color
+// (as a single 'packed' 32-bit value, which you can get by calling
+// strip.Color(red, green, blue) as shown in the loop() function above),
+// and a delay time (in milliseconds) between pixels.
+bool LED_Strip::colorWipeOneByOne(int wait, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
         _lastTime = _currentTime;

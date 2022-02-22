@@ -59,36 +59,21 @@ void mqttCallback(String topic){
     if(topic == mqtt_LED_cmd_topic){
         String LED_on = jsonDoc["on"];
         String LED_off = jsonDoc["off"];
-        String LED_mode = jsonDoc["mode"];
+        String LED_simulation = jsonDoc["simulation"];
 
         Serial.print("LED_on: ");
         Serial.println(LED_on);
         Serial.print("LED_off: ");
         Serial.println(LED_off);
-        Serial.print("LED_mode: ");
-        Serial.println(LED_mode);
+        Serial.print("LED_simulation: ");
+        Serial.println(LED_simulation);
 
         if(LED_on != "null"){
             if(LED_on == ""){
                 jsonDoc["on"] = "LED is on!";
             }
             else{
-                int commaIndex = LED_on.indexOf(',');
-                int secondCommaIndex = LED_on.indexOf(',', commaIndex + 1);
-
-                String str_r = LED_on.substring(0, commaIndex);
-                String str_g = LED_on.substring(commaIndex + 1, secondCommaIndex);
-                String str_b = LED_on.substring(secondCommaIndex + 1);
-
-                int value_r = str_r.toInt();
-                int value_g = str_g.toInt();
-                int value_b = str_b.toInt();
-
-                if(value_r >= 0 && value_g >= 0 && value_b >= 0 && value_r <= 255 && value_g <= 255 && value_b <= 255){
-                    jsonDoc["on"] = "LED is on with Color" + str_r + "," + str_g + "," + str_b + " !";
-                }else{
-                    jsonDoc["on"] = "Message body is wrong !";
-                }
+                jsonDoc["on"] = "Message body is wrong !";
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
@@ -103,10 +88,10 @@ void mqttCallback(String topic){
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
         }
-        else if(LED_mode != "null"){
-            int LED_mode_int = LED_mode.toInt();
-            if(LED_mode_int >= 0 && LED_mode_int <= NUMBER_OF_LED_MODES){
-                jsonDoc["mode"] = "LED is in mode " + LED_mode;
+        else if(LED_simulation != "null"){
+            int LED_simulation_int = LED_simulation.toInt();
+            if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_MODES){
+                jsonDoc["mode"] = "LED is in mode " + LED_simulation;
             }
             else{
                 jsonDoc["mode"] = "Message body is wrong !";
