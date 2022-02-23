@@ -25,11 +25,17 @@
 #define LED_STRIP6_PIN 14
 #define NUMBER_OF_LEDS_STRIP6 7
 
-const COLOR colorLEDStrip1(255,0,0);
-const COLOR colorLEDStrip2(0,255,0);
-const COLOR colorLEDStrip3(0,0,255);
-const COLOR colorLEDStrip4(255,0,255);
-const COLOR colorLEDStrip5(255,255,0);
+// const COLOR colorLEDStrip1(255,0,0);
+// const COLOR colorLEDStrip2(204,255,0);
+// const COLOR colorLEDStrip3(0,255,102);
+// const COLOR colorLEDStrip4(0,102,255);
+// const COLOR colorLEDStrip5(204,0,255);
+
+const COLOR colorLEDStrip1(255,43,0);
+const COLOR colorLEDStrip2(161,255,0);
+const COLOR colorLEDStrip3(0,255,145);
+const COLOR colorLEDStrip4(0,59,255);
+const COLOR colorLEDStrip5(246,0,255);
 
 const int ringIndexLEDStrip1 = 1;
 const int ringIndexLEDStrip2 = 3;

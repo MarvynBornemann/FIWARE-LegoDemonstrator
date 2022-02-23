@@ -4,7 +4,6 @@ LED_Strip::LED_Strip(int numberOfLEDs, int pinLED){
     strip = new Adafruit_NeoPixel(numberOfLEDs, pinLED, NEO_GRB + NEO_KHZ800);
     _lastTime = millis();
     pixelIndex = 0;
-    mode = 0;
 }
 
 LED_Strip::~LED_Strip(){
@@ -17,47 +16,8 @@ void LED_Strip::setup(){
     strip->setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
-void LED_Strip::loop(){
-    // Fill along the length of the strip in various colors...
-    switch(mode){
-        case 0:
-            break;
-        case 1:
-            setColor(255, 255, 255);
-            plainColor(1000, 2); // White
-            break;
-        case 2:
-            setColor(255,   0,   0);
-            colorWipe(50, 2); // Red
-            break;
-        case 3:
-            setColor(  0, 255,   0);
-            colorWipe(50, 2); // Green
-            break;
-        case 4:
-            setColor(   0,   0, 255);
-            colorWipe(50, 2); // Blue
-            break;
-        case 5:
-            rainbow(10, 5);             // Flowing rainbow cycle along the whole strip
-            break;
-        case 6:
-            setColor(127,   0,   0);
-            theaterChase(50, 10); // Red, half brightness
-            break;
-        case 7:
-            setColor(127, 127, 127);
-            theaterChase(50, 10); // White, half brightness
-            break;
-        case 8: 
-            theaterChaseRainbow(50, 30); // Rainbow-enhanced theaterChase variant
-            break;
-        default:
-            clear();
-            break;
-    }
-}
-
+//Select next Pixel depending on the direction.
+//Return 1 if the next Pixel reached the endPixel or the startPixel
 bool LED_Strip::nextPixel(bool direction, int startPixel, int endPixel){
     //next pixel index depending on direction
     if(direction) pixelIndex--;
@@ -90,16 +50,7 @@ bool LED_Strip::nextPixel(bool direction, int startPixel, int endPixel){
     return 0;
 }
 
-void LED_Strip::nextMode(){
-    mode++;
-    if(mode >= numberOfModes) mode = 0;
-}
-
-void LED_Strip::setMode(int mode){
-    if(mode >= numberOfModes) this->mode = 0;
-    else this->mode = mode;
-}
-
+//return 1 if this function got executed #numberOfRepeat times
 bool LED_Strip::repeat(int numberOfRepeat){
     repeatIndex++;
     if(repeatIndex >= numberOfRepeat){
@@ -109,27 +60,31 @@ bool LED_Strip::repeat(int numberOfRepeat){
     return 0;
 }
 
-// set color of LED Strip -----------------
+// set color of LED Strip (r,g,b)
 void LED_Strip::setColor(uint8_t r, uint8_t g, uint8_t b) {
     color.r = r;
     color.g = g;
     color.b = b;
 }
 
+// set color of LED Strip (COLOR)
 void LED_Strip::setColor(COLOR color) {
     this->color = color;
 }
 
+// return number of LEDs of the strip
 int LED_Strip::getNumberOfLEDs(){
     return strip->numPixels();
 }
 
+// turn off the strip
 void LED_Strip::clear() {
     strip->clear();
     strip->show();
 }
 
-// Some functions of our own for creating animated effects -----------------
+// Fill all strip pixels with one plain color
+// Pass delay time (in ms) between frames.
 bool LED_Strip::plainColor(int wait, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
@@ -147,11 +102,10 @@ bool LED_Strip::plainColor(int wait, int numberOfRepeat) {
 }
 
 
-// Fill strip pixels one after another with a color. Strip is NOT cleared
-// first; anything there will be covered pixel by pixel. Pass in color
-// (as a single 'packed' 32-bit value, which you can get by calling
-// strip.Color(red, green, blue) as shown in the loop() function above),
-// and a delay time (in milliseconds) between pixels.
+// Fill strip pixels one after another with a color beginning at the startPixel
+// and moving in the direction until the endPixel is reached.
+// At the end all pixels from startPixel to endPixel show the same color.
+// Pass delay time (in ms) between frames.
 bool LED_Strip::colorWipe(int wait, bool direction, int startPixel, int endPixel, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
@@ -174,11 +128,10 @@ bool LED_Strip::colorWipe(int wait, bool direction, int startPixel, int endPixel
 }
 
 
-// Fill strip pixels one after another with a color. Strip is NOT cleared
-// first; anything there will be covered pixel by pixel. Pass in color
-// (as a single 'packed' 32-bit value, which you can get by calling
-// strip.Color(red, green, blue) as shown in the loop() function above),
-// and a delay time (in milliseconds) between pixels.
+// Fill strip pixels one after another with a color beginning at the startPixel
+// and moving in both directions until both endPixel1 and endPixel2 are reached.
+// At the end all pixels in between endPixel1 and endPixel2 show the same color.
+// Pass delay time (in ms) between frames.
 bool LED_Strip::colorWipeDouble(int wait, int startPixel, int endPixel1, int endPixel2, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
@@ -217,11 +170,10 @@ bool LED_Strip::colorWipeDouble(int wait, int startPixel, int endPixel1, int end
     return 0;
 }
 
-// Fill strip pixels one after another with a color. Strip is NOT cleared
-// first; anything there will be covered pixel by pixel. Pass in color
-// (as a single 'packed' 32-bit value, which you can get by calling
-// strip.Color(red, green, blue) as shown in the loop() function above),
-// and a delay time (in milliseconds) between pixels.
+// Fill strip pixels one by one with a color beginning at the startPixel
+// and moving in the direction until the endPixel is reached. 
+// Only one Pixel shows the color at each time. 
+// Pass delay time (in ms) between frames.
 bool LED_Strip::colorWipeOneByOne(int wait, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
@@ -238,9 +190,7 @@ bool LED_Strip::colorWipeOneByOne(int wait, int numberOfRepeat) {
     return 0;
 }
 
-// Theater-marquee-style chasing lights. Pass in a color (32-bit value,
-// a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
-// between frames.
+// Theater-marquee-style chasing lights. Pass delay time (in ms) between frames.
 bool LED_Strip::theaterChase(int wait, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {

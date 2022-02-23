@@ -101,7 +101,7 @@ void MQTT::mqtt_callback(char* topic, byte* message, unsigned int length) {
 }
 
 void MQTT::mqtt_reconnect() {
-long currentTime = millis();
+    long currentTime = millis();
     if(!client.connected() && (currentTime - lastTime > MQTT_RECONNECT_TIME * 1000)){
         lastTime = currentTime;
 

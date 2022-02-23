@@ -4,8 +4,6 @@
 
 #include <Adafruit_NeoPixel.h>
 
-#define NUMBER_OF_LED_MODES 9
-
 struct COLOR {
     uint8_t r;
     uint8_t g;
@@ -30,9 +28,6 @@ class LED_Strip
         long _lastTime;
         int pixelIndex;
 
-        int mode;
-        const int numberOfModes = NUMBER_OF_LED_MODES;
-
         long rainbowFirstPixelHue = 0;
         int theaterChaseIndex = 0;
 
@@ -53,7 +48,6 @@ class LED_Strip
         ~LED_Strip();
         
         void setup();
-        void loop();
 
         void setColor(uint8_t r, uint8_t g, uint8_t b);
         void setColor(COLOR color);
@@ -67,7 +61,4 @@ class LED_Strip
         bool theaterChase(int wait, int numberOfRepeat = 1);
         bool rainbow(int wait, int numberOfRepeat = 1);
         bool theaterChaseRainbow(int wait, int numberOfRepeat = 1);
-
-        void nextMode();
-        void setMode(int mode);
 };
