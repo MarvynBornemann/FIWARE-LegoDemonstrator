@@ -174,16 +174,22 @@ bool LED_Strip::colorWipeDouble(int wait, int startPixel, int endPixel1, int end
 // and moving in the direction until the endPixel is reached. 
 // Only one Pixel shows the color at each time. 
 // Pass delay time (in ms) between frames.
-bool LED_Strip::colorWipeOneByOne(int wait, int numberOfRepeat) {
+bool LED_Strip::colorWipeOneByOne(int wait, bool direction, int startPixel, int endPixel, int numberOfRepeat) {
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
         _lastTime = _currentTime;
+
+        //Initial Condition
+        if(setStartPixel){
+            setStartPixel = false;
+            pixelIndex = startPixel;
+        }
 
         strip->clear();
         strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
         strip->show();                            //  Update strip to match
 
-        if(nextPixel()){
+        if(nextPixel(direction, startPixel, endPixel)){
             if(repeat(numberOfRepeat)) return 1;
         }
     }
@@ -220,6 +226,31 @@ bool LED_Strip::rainbow(int wait, int numberOfRepeat) {
 
         for(int i=0; i<strip->numPixels(); i++) {
             int pixelHue = rainbowFirstPixelHue + (i * 65536L / strip->numPixels());
+            strip->setPixelColor(i, strip->gamma32(strip->ColorHSV(pixelHue)));
+        }
+        strip->show();                            //  Update strip to match
+
+        rainbowFirstPixelHue += 265;
+        if(rainbowFirstPixelHue >= 65536){
+            rainbowFirstPixelHue = 0;
+            if(repeat(numberOfRepeat)) return 1;
+        }
+    }
+    return 0;
+}
+
+// Rainbow cycle plain color with whole strip. Pass delay time (in ms) between frames.
+bool LED_Strip::rainbowPlainColor(int wait, int startPixel, int numberOfPixels, int numberOfRepeat) {
+    long _currentTime = millis();
+    if(_currentTime - _lastTime > wait) {
+        _lastTime = _currentTime;
+
+        int pixelHue = rainbowFirstPixelHue + (startPixel * 65536L / strip->numPixels());
+        if(numberOfPixels > 0){
+            pixelHue = rainbowFirstPixelHue + (startPixel * 65536L / numberOfPixels);
+        }
+        
+        for(int i=0; i<strip->numPixels(); i++) {
             strip->setPixelColor(i, strip->gamma32(strip->ColorHSV(pixelHue)));
         }
         strip->show();                            //  Update strip to match

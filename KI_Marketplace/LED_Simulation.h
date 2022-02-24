@@ -4,8 +4,12 @@
 
 #include "LED_Strip.h"
 
+//Number of Simuations
+#define NUMBER_OF_LED_SIMUATIONS 3
+
 //LED Strips
 #define NUMBER_OF_LED_STRIPS 5
+#define NUMBER_OF_ALL_LED_STRIPS 7
 
 #define LED_STRIP1_PIN 1
 #define NUMBER_OF_LEDS_STRIP1 7
@@ -24,6 +28,9 @@
 
 #define LED_STRIP6_PIN 14
 #define NUMBER_OF_LEDS_STRIP6 7
+
+//good online tool to choose colors
+//https://acrylgiessen.com/farben-mischen-online/
 
 // const COLOR colorLEDStrip1(255,0,0);
 // const COLOR colorLEDStrip2(204,255,0);
@@ -48,8 +55,11 @@ const int ringIndexLEDStrip6 = 11;
 #define LED_RING_PIN 2
 #define NUMBER_OF_LEDS_RING 12
 
+//Frequencies
 #define TIME_OF_COLOR_WIPE 50
+#define TIME_OF_RAINBOW 10
 
+#define SIMULATION1_REPEATS 3
 
 class LED_Simulation
 {
@@ -65,7 +75,10 @@ class LED_Simulation
 
         LED_Strip* ledStripFirst;
         LED_Strip* ledStripSecond;
-        LED_Strip* ledStrips[NUMBER_OF_LED_STRIPS];
+        LED_Strip* ledStrips[NUMBER_OF_ALL_LED_STRIPS];
+
+        bool ledStripsFinished[NUMBER_OF_ALL_LED_STRIPS] = {false};
+        bool allLEDStripsFinished = false;
 
         COLOR colorFirst;
         COLOR colorSecond;
@@ -83,10 +96,14 @@ class LED_Simulation
         void nextSimulationStage(bool ledStripFinished);
         void getRandomStrips();
         COLOR mix2Colors(COLOR color1, COLOR color2);
-        bool ledRing_colorWipeShortestWay(int ringIndexStart, int ringIndexEnd);
+        bool ledRing_colorWipeShortestWay(int ringIndexStart, int ringIndexEnd);        
 
+        int counterSimulation1 = 0;
         void simulation1();
         void simulation2();
+
+        int counterSimulation3 = 0;
+        void simulation3(COLOR color);
 
         void clearAllStrips();
 

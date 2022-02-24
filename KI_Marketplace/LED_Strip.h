@@ -57,8 +57,9 @@ class LED_Strip
         bool plainColor(int wait, int numberOfRepeat = 1);
         bool colorWipe(int wait, bool direction = false, int startPixel = 0, int endPixel = -1, int numberOfRepeat = 1);
         bool colorWipeDouble(int wait, int startPixel, int endPixel1, int endPixel2, int numberOfRepeat = 1);
-        bool colorWipeOneByOne(int wait, int numberOfRepeat = 1);
+        bool colorWipeOneByOne(int wait, bool direction = false, int startPixel = 0, int endPixel = -1, int numberOfRepeat = 1);
         bool theaterChase(int wait, int numberOfRepeat = 1);
         bool rainbow(int wait, int numberOfRepeat = 1);
+        bool rainbowPlainColor(int wait, int startPixel = 0, int numberOfPixels = -1, int numberOfRepeat = 1);
         bool theaterChaseRainbow(int wait, int numberOfRepeat = 1);
 };
