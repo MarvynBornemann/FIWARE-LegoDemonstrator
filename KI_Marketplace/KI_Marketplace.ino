@@ -1,5 +1,6 @@
 #include "MQTT.h"
 #include "LED_Simulation.h"
+#include "LED_Bar.h"
 
 //------------changeable-variables---------------------------------
 //LED Bar Graph
@@ -7,7 +8,6 @@
 #define DCKI_LED_BAR1_PIN 5
 #define DI_LED_BAR2_PIN 4
 #define DCKI_LED_BAR2_PIN 0
-
 
 //Connection variables
 const char* wifi_ssid = "FIWARE_fair";
@@ -34,6 +34,10 @@ DynamicJsonDocument jsonDoc(1024);
 //LED_Simulation
 LED_Simulation ledSimulation;
 
+//LED_Bar
+LED_Bar ledBar1(DCKI_LED_BAR1_PIN, DI_LED_BAR1_PIN);
+LED_Bar ledBar2(DCKI_LED_BAR2_PIN, DI_LED_BAR2_PIN);
+
 //-----------------------setup-----------------------------------------
 void setup() {
     Serial.begin(115200);
@@ -42,6 +46,9 @@ void setup() {
     mqtt.subscribe(mqtt_LED_cmd_topic);
 
     ledSimulation.setup();
+
+    ledBar1.setup();
+    ledBar2.setup();
 }
 
 //-----------------------loop------------------------------------------
@@ -49,6 +56,9 @@ void loop() {
     mqtt.loop();
     //update LED-Simulation
     ledSimulation.loop();
+
+    ledBar1.loop();
+    ledBar2.loop();
 }
 
 //ToDo: anpassen an neues LED setup
@@ -90,7 +100,7 @@ void mqttCallback(String topic){
         }
         else if(LED_simulation != "null"){
             int LED_simulation_int = LED_simulation.toInt();
-            if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_MODES){
+            if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_SIMUATIONS){
                 jsonDoc["mode"] = "LED is in mode " + LED_simulation;
             }
             else{
