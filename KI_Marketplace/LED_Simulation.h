@@ -5,7 +5,7 @@
 #include "LED_Strip.h"
 
 //Number of Simuations
-#define NUMBER_OF_LED_SIMUATIONS 3
+#define NUMBER_OF_LED_SIMULATIONS 3
 
 //LED Strips
 #define NUMBER_OF_LED_STRIPS 5

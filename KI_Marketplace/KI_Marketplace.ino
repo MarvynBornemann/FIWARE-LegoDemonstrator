@@ -100,7 +100,7 @@ void mqttCallback(String topic){
         }
         else if(LED_simulation != "null"){
             int LED_simulation_int = LED_simulation.toInt();
-            if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_SIMUATIONS){
+            if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_SIMULATIONS){
                 jsonDoc["mode"] = "LED is in mode " + LED_simulation;
             }
             else{
