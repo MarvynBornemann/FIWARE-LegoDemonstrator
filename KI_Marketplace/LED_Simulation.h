@@ -105,6 +105,9 @@ class LED_Simulation
         int counterSimulation3 = 0;
         void simulation3(COLOR color);
 
+        int counterSimulation4 = 0;
+        void simulation4();
+
         void clearAllStrips();
 
 

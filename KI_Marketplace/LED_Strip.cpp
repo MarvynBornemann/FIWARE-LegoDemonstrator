@@ -31,6 +31,9 @@ bool LED_Strip::nextPixel(bool direction, int startPixel, int endPixel){
         pixelIndex = strip->numPixels() - 1;
     }
 
+    //next pixel color
+    chooseColorByIndex(pixelIndex);
+
     //return 1 if startPixel or EndPixel is reached
     int _endPixel = -1;
     if(endPixel > -1){
@@ -69,7 +72,24 @@ void LED_Strip::setColor(uint8_t r, uint8_t g, uint8_t b) {
 
 // set color of LED Strip (COLOR)
 void LED_Strip::setColor(COLOR color) {
-    this->color = color;
+    this->colorMain = color;
+    colorSecondIsSet = false;
+}
+
+// set second color of LED Strip (COLOR) for alternating colors at colorWipes
+void LED_Strip::setColorSecond(COLOR color) {
+    this->colorSecond = color;
+    colorSecondIsSet = true;
+}
+
+// alternate colors if second coor is set
+void LED_Strip::chooseColorByIndex(int index) {
+    color = colorMain;
+    if(colorSecondIsSet){
+        if(index % 2 == 1){
+            color = colorSecond;
+        }
+    }
 }
 
 // return number of LEDs of the strip
@@ -92,7 +112,7 @@ bool LED_Strip::plainColor(int wait, int numberOfRepeat) {
 
         strip->clear();
         for(int i=0; i<strip->numPixels(); i++) {
-            strip->setPixelColor(i, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+            strip->setPixelColor(i, strip->Color(colorMain.r, colorMain.g, colorMain.b));         //  Set pixel's color (in RAM)
         }
         strip->show();
 
@@ -115,6 +135,7 @@ bool LED_Strip::colorWipe(int wait, bool direction, int startPixel, int endPixel
         if(setStartPixel){
             setStartPixel = false;
             pixelIndex = startPixel;
+            chooseColorByIndex(startPixel);
         }
 
         strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
@@ -141,7 +162,11 @@ bool LED_Strip::colorWipeDouble(int wait, int startPixel, int endPixel1, int end
         if(setStartPixel){
             setStartPixel = false;
             pixelIndex = 0;
+            chooseColorByIndex(pixelIndex);
         }
+
+        //ToDo: is needed because strips connect to ring at pixels 1,3,5,..
+        chooseColorByIndex(pixelIndex + 1);
 
         //calculate next Pixels
         int startPixelPlus = (startPixel + pixelIndex) % strip->numPixels();
@@ -183,6 +208,7 @@ bool LED_Strip::colorWipeOneByOne(int wait, bool direction, int startPixel, int 
         if(setStartPixel){
             setStartPixel = false;
             pixelIndex = startPixel;
+            chooseColorByIndex(startPixel);
         }
 
         strip->clear();

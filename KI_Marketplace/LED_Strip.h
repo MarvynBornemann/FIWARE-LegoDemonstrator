@@ -34,6 +34,12 @@ class LED_Strip
         int repeatIndex = 0;
 
         COLOR color;
+        COLOR colorMain;
+        COLOR colorSecond;
+        COLOR pixelColor;
+        bool colorSecondIsSet = false;
+
+        void chooseColorByIndex(int index);
 
         bool setStartPixel = true;
 
@@ -51,6 +57,7 @@ class LED_Strip
 
         void setColor(uint8_t r, uint8_t g, uint8_t b);
         void setColor(COLOR color);
+        void setColorSecond(COLOR color);
         int getNumberOfLEDs();
         void clear();
 

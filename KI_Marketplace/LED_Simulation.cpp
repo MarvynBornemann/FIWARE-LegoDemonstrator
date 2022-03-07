@@ -90,10 +90,18 @@ void LED_Simulation::loop(){
         case 3:
             if(counterSimulation3 >= NUMBER_OF_LED_STRIPS){
                 counterSimulation3 = 0;
-                nextSimulation(1);
+                nextSimulation(4);
                 break;
             }
             simulation3(colors[counterSimulation3]);
+            break;
+        case 4:
+            if(counterSimulation4 >= SIMULATION1_REPEATS){
+                counterSimulation4 = 0;
+                nextSimulation(1);
+                break;
+            }
+            simulation4();
             break;
         default:
             clearAllStrips();
@@ -183,6 +191,100 @@ void LED_Simulation::simulation1(){
         case 15:
             counterSimulation1++;
             nextSimulation(1);
+            break;
+        default:
+            clearAllStrips();
+            break;
+    }
+    
+}
+
+void LED_Simulation::simulation4(){
+    //do only at beginning of simulation
+    if(simulationFinished){
+        simulationFinished = false;
+        getRandomStrips();
+    }
+    switch(simulationStage){
+        case 0:
+            ledStripFirst->setColor(colorFirst);
+            ledStripsFinished[0] = ledStripFirst->colorWipe(TIME_OF_COLOR_WIPE, true, ledStripFirst->getNumberOfLEDs() - 1);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 1:
+            ledRing->setColor(colorFirst);
+            ledStripsFinished[0] = ledRing_colorWipeShortestWay(ringIndexFirst, ringIndexLEDStrip6);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 2:
+            ledStrip6->setColor(colorFirst);
+            ledStripsFinished[0] = ledStrip6->colorWipe(TIME_OF_COLOR_WIPE);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 3:
+            nextSimulationStage(pause(TIME_OF_COLOR_WIPE * 10));
+            break;
+        case 4:
+            clearAllStrips();
+            nextSimulationStage(pause(TIME_OF_COLOR_WIPE));
+            break;
+        case 5:
+            ledStripSecond->setColor(colorSecond);
+            ledStripsFinished[0] = ledStripSecond->colorWipe(TIME_OF_COLOR_WIPE, true, ledStripSecond->getNumberOfLEDs() - 1);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 6:
+            ledRing->setColor(colorSecond);
+            ledStripsFinished[0] = ledRing_colorWipeShortestWay(ringIndexSecond, ringIndexLEDStrip6);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 7:
+            ledStrip6->setColor(colorSecond);
+            ledStripsFinished[0] = ledStrip6->colorWipe(TIME_OF_COLOR_WIPE);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 8:
+            nextSimulationStage(pause(TIME_OF_COLOR_WIPE * 10));
+            break;
+        case 9:
+            clearAllStrips();
+            nextSimulationStage(pause(TIME_OF_COLOR_WIPE));
+            break;
+        case 10:
+            ledStrip6->setColor(colorFirst);
+            ledStrip6->setColorSecond(colorSecond);
+            ledStripsFinished[0] = ledStrip6->colorWipe(TIME_OF_COLOR_WIPE, true, ledStrip6->getNumberOfLEDs() - 1);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 11:
+            ledRing->setColor(colorFirst);
+            ledRing->setColorSecond(colorSecond);
+            ledStripsFinished[0] = ledRing->colorWipeDouble(TIME_OF_COLOR_WIPE, ringIndexLEDStrip6, ringIndexFirst, ringIndexSecond);
+            nextSimulationStage(ledStripsFinished[0]);
+            break;
+        case 12:
+            if(!ledStripsFinished[0]){
+                ledStripFirst->setColor(colorFirst);
+                ledStripFirst->setColorSecond(colorSecond);
+                ledStripsFinished[0] = ledStripFirst->colorWipe(TIME_OF_COLOR_WIPE);
+            } 
+            if(!ledStripsFinished[1]){
+                ledStripSecond->setColor(colorFirst);
+                ledStripSecond->setColorSecond(colorSecond);
+                ledStripsFinished[1] = ledStripSecond->colorWipe(TIME_OF_COLOR_WIPE);
+            } 
+            nextSimulationStage((ledStripsFinished[0] && ledStripsFinished[1]));
+            break;
+        case 13:
+            nextSimulationStage(pause(2000));
+            break;
+        case 14:
+            clearAllStrips();
+            nextSimulationStage(pause(1000));
+            break;
+        case 15:
+            counterSimulation4++;
+            nextSimulation(4);
             break;
         default:
             clearAllStrips();
