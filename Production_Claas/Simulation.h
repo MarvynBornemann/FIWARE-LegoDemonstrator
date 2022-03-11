@@ -7,7 +7,7 @@
 #include "RGB_LED.h"
 
 //Number of Simuations
-#define NUMBER_OF_SIMULATIONS 3
+#define NUMBER_OF_SIMULATIONS 2
 
 //LED Strips
 #define LED_STRIP1_PIN 1
@@ -34,9 +34,8 @@
 #define TIME_OF_COLOR_WIPE 200
 #define TIME_OF_DATASTREAM 50
 #define TIME_OF_PAUSE 1000
-#define TIME_OF_SERVO 50
+#define TIME_OF_SERVO 20
 
-#define SIMULATION1_REPEATS 3
 
 //datastream for ledStrip
 const int datastreamLength = 64;
@@ -72,7 +71,6 @@ class Simulation
         void nextSimulationStage(bool ledStripFinished);
 
         //Simulations
-        int counterSimulation1 = 0;
         void simulation1();
         void simulation2();
 
