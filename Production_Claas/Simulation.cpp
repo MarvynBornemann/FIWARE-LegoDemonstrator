@@ -75,11 +75,6 @@ void Simulation::loop(){
             turnEverythingOff();
             break;
         case 1:
-            if(counterSimulation1 >= SIMULATION1_REPEATS){
-                counterSimulation1 = 0;
-                nextSimulation(2);
-                break;
-            }
             simulation1();
             break;
         case 2:
@@ -153,46 +148,59 @@ void Simulation::simulation1(){
             nextSimulationStage(pause(TIME_OF_PAUSE));
             break;
         case 11:
-            stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 90);
-            nextSimulationStage(stagePartFinished[0]);
-            break;
-        case 12:
             if(!stagePartFinished[0]){
-                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 0);
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 180, 5);
             }
             if(!stagePartFinished[1]){
                 stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 180, 5);
             }
             nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
             break;
-        case 13:
+        case 12:
             if(!stagePartFinished[0]){
-                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 90, 2);
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 90, 5);
             }
             if(!stagePartFinished[1]){
-                stagePartFinished[1] = (stagePartFinished && servoRobot2->goToAngle(TIME_OF_SERVO, 0, 10));
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 90, 5);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 13:
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 180, 5);
+            }
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 180, 5);
             }
             nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
             break;
         case 14:
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 0, 5);
+            }
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 0, 5);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 15:
             rgbLED1->setColor(COLOR(0,255,0));
             stagePartFinished[0] = rgbLED1->plainColor(TIME_OF_PAUSE);
             nextSimulationStage(stagePartFinished[0]);
             break;
-        case 15:
+        case 16:
             nextSimulationStage(pause(TIME_OF_PAUSE));
             break;
-        case 16:
+        case 17:
             rgbLED1->setColor(COLOR(255,0,0));
             stagePartFinished[0] = rgbLED1->blinkPlainColor(TIME_OF_DATASTREAM, 15, 5);
             nextSimulationStage(stagePartFinished[0]);
             break;
-        case 17:
-            stagePartFinished[0] = rgbLED1->weldingWork(1000);
+        case 18:
+            stagePartFinished[0] = rgbLED1->weldingWork(200);
             nextSimulationStage(stagePartFinished[0]);
             break;
-        case 18:
-            counterSimulation1++;
+        case 19:
             nextSimulation(1);
             break;
         default:
@@ -210,7 +218,7 @@ void Simulation::simulation2(){
 
     switch(simulationStage){
         case 0:
-            nextSimulation(1);
+            nextSimulation(2);
             break;
         default:
             turnEverythingOff();
