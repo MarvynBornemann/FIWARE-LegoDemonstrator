@@ -54,27 +54,24 @@ void Simulation::setup(){
     ledStripDatastream->setup();
     rgbLED1->setup();
     rgbLED2->setup();
-    attachServos();
+    //analogWriteFreq(100);
 }
 
 void Simulation::turnEverythingOff(){
     ledStripScanner->clear();
     ledStripDatastream->clear();
-    servoScanner->stop();
-    servoRobot1->stop();
-    servoRobot2->stop();
     rgbLED1->clear();
     rgbLED2->clear();
 }
 
 void Simulation::attachServos(){
-    servoScanner->attach();
+    //servoScanner->attach();
     servoRobot1->attach();
     servoRobot2->attach();
 }
 
 void Simulation::detachServos(){
-    servoScanner->detach();
+    //servoScanner->detach();
     servoRobot1->detach();
     servoRobot2->detach();
 }
@@ -100,10 +97,11 @@ void Simulation::simulation1(){
     //do only at beginning of simulation
     if(simulationFinished){
         simulationFinished = false;
+        servoScanner->attach();
     }
     switch(simulationStage){
         case 0:
-            servoScanner->rotate(15);
+            servoScanner->rotate(10);
             nextSimulationStage(pause(100));
             break;
         case 1:
@@ -117,72 +115,156 @@ void Simulation::simulation1(){
             nextSimulationStage(stagePartFinished[0]);
             break;
         case 3:
-            turnEverythingOff();
-            nextSimulationStage(pause(TIME_OF_PAUSE));
+            ledStripScanner->setColor(COLOR(255,255,0));
+            stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, false, 0 , ledStripScanner->getNumberOfLEDs()/2 - 1);
+            nextSimulationStage(stagePartFinished[0]);
             break;
         case 4:
-            servoScanner->rotate(15, false);
-            nextSimulationStage(pause(100));
+            ledStripScanner->setColor(COLOR(255,255,0));
+            stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, true, ledStripScanner->getNumberOfLEDs()/2 - 1, 0);
+            nextSimulationStage(stagePartFinished[0]);
             break;
         case 5:
-            ledStripScanner->setColor(COLOR(255,255,0));
+            ledStripScanner->setColor(COLOR(0,255,0));
             stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, false, 0 , ledStripScanner->getNumberOfLEDs()/2 - 1);
             nextSimulationStage(stagePartFinished[0]);
             break;
         case 6:
-            ledStripScanner->setColor(COLOR(255,255,0));
+            ledStripScanner->setColor(COLOR(0,255,0));
             stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, true, ledStripScanner->getNumberOfLEDs()/2 - 1, 0);
             nextSimulationStage(stagePartFinished[0]);
             break;
         case 7:
+            servoScanner->stop();
             turnEverythingOff();
-            nextSimulationStage(pause(TIME_OF_PAUSE));
+            nextSimulationStage(pause(10));
             break;
         case 8:
-            servoScanner->rotate(10);
-            nextSimulationStage(pause(100));
-            break;
-        case 9:
-            ledStripScanner->setColor(COLOR(0,255,0));
-            stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, false, 0 , ledStripScanner->getNumberOfLEDs()/2 - 1);
-            nextSimulationStage(stagePartFinished[0]);
-            break;
-        case 10:
-            servoScanner->rotate(10, false);
-            nextSimulationStage(pause(100));
-            break;
-        case 11:
-            ledStripScanner->setColor(COLOR(0,255,0));
-            stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, true, ledStripScanner->getNumberOfLEDs()/2 - 1, 0);
-            nextSimulationStage(stagePartFinished[0]);
-            break;
-        case 12:
+            servoScanner->detach();
             turnEverythingOff();
             nextSimulationStage(pause(TIME_OF_PAUSE));
             break;
-        case 13:
+        case 9:
             ledStripDatastream->setColor(COLOR(0,255,0));
             stagePartFinished[0] = ledStripDatastream->dataWipe(TIME_OF_DATASTREAM, datastream, datastreamLength, 3);
             nextSimulationStage(stagePartFinished[0]);
             break;
-        case 14:
+        case 10:
             turnEverythingOff();
-            nextSimulationStage(pause(TIME_OF_PAUSE));
-            break;
-        case 15:
-            //attachServos();
             nextSimulationStage(pause(100));
             break;
+        case 11:
+            attachServos();
+            nextSimulationStage(pause(TIME_OF_PAUSE));
+            break;
+        case 12:
+            rgbLED2->setColor(COLOR(255,0,0)); // red
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 5);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 13:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 0, 5);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 14:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            stagePartFinished[0] = rgbLED1->weldingWork(50);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 15:
+            rgbLED1->clear();
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
         case 16:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            stagePartFinished[0] = servoRobot2->goToAngle(TIME_OF_SERVO, 0, 5);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 17:
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 18:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            stagePartFinished[0] = servoRobot2->goToAngle(TIME_OF_SERVO, 40, 5);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 19:
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 20:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
             if(!stagePartFinished[0]){
-                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 180, 5);
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 40, 5);
             }
             if(!stagePartFinished[1]){
-                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 180, 5);
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO * 2, 0, 2);
             }
             nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
             break;
-        case 17:
+        case 21:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = rgbLED1->weldingWork(50);
+            }else rgbLED1->clear();
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO * 5, 40, 1);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 22:
+            rgbLED1->clear();
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 23:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO * 10, 0, 1);
+            }
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = rgbLED1->weldingWork(200);
+            }else rgbLED1->clear();
+            if(!stagePartFinished[2]){
+                stagePartFinished[2] = servoRobot2->goToAngle(TIME_OF_SERVO, 10, 5);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1] && stagePartFinished[2]));
+            break;
+        case 24:
+            rgbLED1->clear();
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 25:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 40, 5);
+            }
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 30, 5);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 26:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = rgbLED1->weldingWork(50);
+            }else rgbLED1->clear();
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO * 10, 0, 2);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 27:
+            rgbLED1->clear();
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 2);
+            nextSimulationStage(stagePartFinished[0]);
+            break;
+        case 28:
+            rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK);
             if(!stagePartFinished[0]){
                 stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 90, 5);
             }
@@ -191,42 +273,19 @@ void Simulation::simulation1(){
             }
             nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
             break;
-        case 18:
-            if(!stagePartFinished[0]){
-                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 180, 5);
-            }
-            if(!stagePartFinished[1]){
-                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 180, 5);
-            }
-            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+        case 29:
+            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_BLINK, STEPS_OF_BLINK, 5);
+            nextSimulationStage(stagePartFinished[0]);
             break;
-        case 19:
-            if(!stagePartFinished[0]){
-                stagePartFinished[0] = servoRobot1->goToAngle(TIME_OF_SERVO, 0, 5);
-            }
-            if(!stagePartFinished[1]){
-                stagePartFinished[1] = servoRobot2->goToAngle(TIME_OF_SERVO, 0, 5);
-            }
-            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+        case 30:
+            detachServos();
+            nextSimulationStage(pause(100));
             break;
-        // case 20:
-        //     //detachServos();
-        //     nextSimulationStage(pause(100));
-        //     break;
-        case 20:
+        case 31:
             turnEverythingOff();
-            nextSimulationStage(pause(TIME_OF_PAUSE));
+            nextSimulationStage(pause(TIME_OF_PAUSE * 5));
             break;
-        case 21:
-            rgbLED2->setColor(COLOR(255,0,0));
-            stagePartFinished[0] = rgbLED2->blinkPlainColor(TIME_OF_DATASTREAM, 15, 5);
-            nextSimulationStage(stagePartFinished[0]);
-            break;
-        case 22:
-            stagePartFinished[0] = rgbLED1->weldingWork(200);
-            nextSimulationStage(stagePartFinished[0]);
-            break;
-        case 23:
+        case 32:
             nextSimulation(1);
             break;
         default:

@@ -14,7 +14,7 @@ class MyServo
         bool continous = false;
         int PWMPin = 0;
 
-        int angle = 0;
+        int angle = 90;
         
     public:
         MyServo(int PWMPin, bool continous = false);

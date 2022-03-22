@@ -31,8 +31,10 @@
 
 
 //Frequencies
-#define TIME_OF_COLOR_WIPE 100
+#define TIME_OF_COLOR_WIPE 70
 #define TIME_OF_DATASTREAM 50
+#define TIME_OF_BLINK 50
+#define STEPS_OF_BLINK 15
 #define TIME_OF_PAUSE 1000
 #define TIME_OF_SERVO 20
 
