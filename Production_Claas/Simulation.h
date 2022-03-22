@@ -31,7 +31,7 @@
 
 
 //Frequencies
-#define TIME_OF_COLOR_WIPE 70
+#define TIME_OF_COLOR_WIPE 100
 #define TIME_OF_DATASTREAM 50
 #define TIME_OF_BLINK 50
 #define STEPS_OF_BLINK 15
@@ -67,7 +67,7 @@ class Simulation
 
         //Simulation Stage Managment
         int simulationStage = 0;
-        int simulationIndex = 0;
+        int simulationIndex = 1;
         bool simulationFinished = true;
 
         void nextSimulationStage(bool ledStripFinished);

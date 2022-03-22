@@ -167,9 +167,31 @@ bool LED_Strip::colorWipeOneByOne_doubleStrip(int wait, bool direction, int star
         }
 
         strip->clear();
-        strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+        strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));
         strip->setPixelColor(pixelIndex + strip->numPixels()/2, strip->Color(color.r, color.g, color.b));
-        strip->show();                            //  Update strip to match
+        
+        //descending tail of main pixels
+        if(direction){
+            if(pixelIndex < startPixel){
+                strip->setPixelColor(pixelIndex + 1, strip->Color(color.r/4, color.g/4, color.b/4));
+                strip->setPixelColor(pixelIndex + strip->numPixels()/2 + 1, strip->Color(color.r/4, color.g/4, color.b/4));
+            }
+            if(pixelIndex < startPixel - 1){
+                strip->setPixelColor(pixelIndex + 2, strip->Color(color.r/8, color.g/8, color.b/8));
+                strip->setPixelColor(pixelIndex + strip->numPixels()/2 + 2, strip->Color(color.r/8, color.g/8, color.b/8));
+            }
+        }else{
+            if(pixelIndex > startPixel){
+                strip->setPixelColor(pixelIndex - 1, strip->Color(color.r/4, color.g/4, color.b/4));
+                strip->setPixelColor(pixelIndex + strip->numPixels()/2 - 1, strip->Color(color.r/4, color.g/4, color.b/4));
+            }
+            if(pixelIndex > startPixel){
+                strip->setPixelColor(pixelIndex - 2, strip->Color(color.r/8, color.g/8, color.b/8));
+                strip->setPixelColor(pixelIndex + strip->numPixels()/2 - 2, strip->Color(color.r/8, color.g/8, color.b/8));
+            }
+        }
+        
+        strip->show();                    
 
         if(nextPixel(direction, startPixel, endPixel)){
             if(repeat(numberOfRepeat)) return 1;

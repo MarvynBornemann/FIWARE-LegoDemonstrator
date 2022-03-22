@@ -34,6 +34,7 @@ void Simulation::nextSimulation(int simulationIndex){
     simulationStage = 0;
     simulationFinished = true;
     turnEverythingOff();
+    detachServos();
 }
 
 bool Simulation::pause(long milliseconds){
@@ -71,7 +72,7 @@ void Simulation::attachServos(){
 }
 
 void Simulation::detachServos(){
-    //servoScanner->detach();
+    servoScanner->detach();
     servoRobot1->detach();
     servoRobot2->detach();
 }
@@ -110,7 +111,7 @@ void Simulation::simulation1(){
             nextSimulationStage(stagePartFinished[0]);
             break;
         case 2:
-            ledStripScanner->setColor(COLOR(255,0,0));
+            ledStripScanner->setColor(COLOR(255,100,0));
             stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, true, ledStripScanner->getNumberOfLEDs()/2 - 1, 0);
             nextSimulationStage(stagePartFinished[0]);
             break;
@@ -120,7 +121,7 @@ void Simulation::simulation1(){
             nextSimulationStage(stagePartFinished[0]);
             break;
         case 4:
-            ledStripScanner->setColor(COLOR(255,255,0));
+            ledStripScanner->setColor(COLOR(100,255,0));
             stagePartFinished[0] = ledStripScanner->colorWipeOneByOne_doubleStrip(TIME_OF_COLOR_WIPE, true, ledStripScanner->getNumberOfLEDs()/2 - 1, 0);
             nextSimulationStage(stagePartFinished[0]);
             break;

@@ -64,9 +64,10 @@ void mqttCallback(String topic){
         if(LED_on != "null"){
             if(LED_on == ""){
                 jsonDoc["on"] = "LED is on!";
+                simulation.nextSimulation(1);
             }
             else{
-                jsonDoc["on"] = "Message body is wrong !";
+                jsonDoc["on"] = "Message body should be empty !";
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
@@ -74,6 +75,7 @@ void mqttCallback(String topic){
         else if(LED_off != "null"){
             if(LED_off == ""){
                 jsonDoc["off"] = "LED is off!";
+                simulation.nextSimulation(0);
             }
             else{
                 jsonDoc["off"] = "Message body should be empty !";
@@ -84,10 +86,11 @@ void mqttCallback(String topic){
         else if(LED_simulation != "null"){
             int LED_simulation_int = LED_simulation.toInt();
             if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_SIMULATIONS){
-                jsonDoc["mode"] = "LED is in mode " + LED_simulation;
+                jsonDoc["simulation"] = "LED runs simulation " + LED_simulation;
+                simulation.nextSimulation(LED_simulation_int);
             }
             else{
-                jsonDoc["mode"] = "Message body is wrong !";
+                jsonDoc["simulation"] = "Message body is wrong !";
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
