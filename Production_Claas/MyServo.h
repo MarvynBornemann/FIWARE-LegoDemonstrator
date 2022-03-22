@@ -19,7 +19,8 @@ class MyServo
     public:
         MyServo(int PWMPin, bool continous = false);
 
-        void setup();
+        void attach();
+        void detach();
         void rotate(int speed, bool clockwise = true);
         void stop();
         bool goToAngle(int wait, int degree, int stepSize = 1);

@@ -4,6 +4,8 @@
 
 #include <Adafruit_NeoPixel.h>
 
+#define LED_BRIGHTNESS 50       // Set brightness of LED strip (max = 255)
+
 struct COLOR {
     uint8_t r;
     uint8_t g;

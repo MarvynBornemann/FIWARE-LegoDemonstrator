@@ -13,7 +13,7 @@ LED_Strip::~LED_Strip(){
 void LED_Strip::setup(){
     strip->begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
     strip->show();            // Turn OFF all pixels ASAP
-    strip->setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
+    strip->setBrightness(LED_BRIGHTNESS); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
 // turn off the strip
@@ -142,6 +142,33 @@ bool LED_Strip::colorWipeOneByOne(int wait, bool direction, int startPixel, int 
 
         strip->clear();
         strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+        strip->show();                            //  Update strip to match
+
+        if(nextPixel(direction, startPixel, endPixel)){
+            if(repeat(numberOfRepeat)) return 1;
+        }
+    }
+    return 0;
+}
+
+// Fill strip pixels one by one with a color beginning at the startPixel
+// and moving in the direction until the endPixel is reached. 
+// Only one Pixel shows the color at each time. 
+// Pass delay time (in ms) between frames.
+bool LED_Strip::colorWipeOneByOne_doubleStrip(int wait, bool direction, int startPixel, int endPixel, int numberOfRepeat) {
+    long _currentTime = millis();
+    if(_currentTime - _lastTime > wait) {
+        _lastTime = _currentTime;
+
+        //Initial Condition
+        if(setStartPixel){
+            setStartPixel = false;
+            pixelIndex = startPixel;
+        }
+
+        strip->clear();
+        strip->setPixelColor(pixelIndex, strip->Color(color.r, color.g, color.b));         //  Set pixel's color (in RAM)
+        strip->setPixelColor(pixelIndex + strip->numPixels()/2, strip->Color(color.r, color.g, color.b));
         strip->show();                            //  Update strip to match
 
         if(nextPixel(direction, startPixel, endPixel)){

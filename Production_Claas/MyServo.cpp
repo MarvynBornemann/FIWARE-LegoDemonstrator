@@ -5,9 +5,14 @@ MyServo::MyServo(int PWMPin, bool continous){
     this->continous = continous;
 }
 
-void MyServo::setup(){
+void MyServo::attach(){
     servo.attach(PWMPin);
     stop();
+}
+
+void MyServo::detach(){
+    stop();
+    servo.detach();
 }
 
 //rotate continous servo (speed [0,90], clockwise [true, false])
@@ -33,7 +38,7 @@ void MyServo::stop(){
 //not-continous servo 
 bool MyServo::goToAngle(int wait, int degree, int stepSize){
     if(continous) return 0;
-    
+
     long _currentTime = millis();
     if(_currentTime - _lastTime > wait) {
         _lastTime = _currentTime;

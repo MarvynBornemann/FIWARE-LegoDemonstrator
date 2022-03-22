@@ -11,10 +11,10 @@
 
 //LED Strips
 #define LED_STRIP1_PIN 1
-#define NUMBER_OF_LEDS_STRIP1 14
+#define NUMBER_OF_LEDS_STRIP1 28
 
 #define LED_STRIP2_PIN 3
-#define NUMBER_OF_LEDS_STRIP2 12
+#define NUMBER_OF_LEDS_STRIP2 21
 
 //Servo
 #define SERVO1_PIN 15
@@ -31,7 +31,7 @@
 
 
 //Frequencies
-#define TIME_OF_COLOR_WIPE 200
+#define TIME_OF_COLOR_WIPE 100
 #define TIME_OF_DATASTREAM 50
 #define TIME_OF_PAUSE 1000
 #define TIME_OF_SERVO 20
@@ -81,6 +81,10 @@ class Simulation
         long pauseStartTime;
         bool setPauseStartTime = true;
         bool pause(long milliseconds);
+
+        //servos
+        void attachServos();
+        void detachServos();
 
     public:
         Simulation();
