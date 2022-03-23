@@ -26,6 +26,7 @@ DynamicJsonDocument jsonDoc(1024);
 
 //Simulation
 Simulation simulation;
+int simulationIndex = 1;
 
 //-----------------------setup-----------------------------------------
 void setup() {
@@ -35,6 +36,7 @@ void setup() {
     mqtt.subscribe(mqtt_LED_cmd_topic);
 
     simulation.setup();
+    simulation.nextSimulation(simulationIndex);
 }
 
 //-----------------------loop------------------------------------------
@@ -64,7 +66,7 @@ void mqttCallback(String topic){
         if(LED_on != "null"){
             if(LED_on == ""){
                 jsonDoc["on"] = "LED is on!";
-                simulation.nextSimulation(1);
+                simulation.nextSimulation(simulationIndex);
             }
             else{
                 jsonDoc["on"] = "Message body should be empty !";
@@ -87,7 +89,8 @@ void mqttCallback(String topic){
             int LED_simulation_int = LED_simulation.toInt();
             if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_SIMULATIONS){
                 jsonDoc["simulation"] = "LED runs simulation " + LED_simulation;
-                simulation.nextSimulation(LED_simulation_int);
+                simulationIndex = LED_simulation_int;
+                simulation.nextSimulation(simulationIndex);
             }
             else{
                 jsonDoc["simulation"] = "Message body is wrong !";

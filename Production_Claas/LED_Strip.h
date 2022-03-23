@@ -37,6 +37,8 @@ class LED_Strip
 
         bool setStartPixel = true;
 
+        long rainbowFirstPixelHue = 0;
+
         bool nextPixel(bool direction = false, int startPixel = 0, int endPixel = -1);
         bool repeat(int numberOfRepeat);
 
@@ -55,4 +57,5 @@ class LED_Strip
         bool colorWipeOneByOne(int wait, bool direction = false, int startPixel = 0, int endPixel = -1, int numberOfRepeat = 1);
         bool colorWipeOneByOne_doubleStrip(int wait, bool direction = false, int startPixel = 0, int endPixel = -1, int numberOfRepeat = 1);
         bool dataWipe(int wait, const bool datastream[], int datastreamLength, int numberOfRepeat = 1);
+        bool rainbow(int wait, int numberOfRepeat = 1);
 };

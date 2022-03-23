@@ -56,6 +56,11 @@ void Simulation::setup(){
     rgbLED1->setup();
     rgbLED2->setup();
     //analogWriteFreq(100);
+
+    //setup servos and move them to start position
+    attachServos();
+    delay(1000);
+    detachServos(); //detach servos as often as possible. When servos are attached they interfere with the LED-Strips.
 }
 
 void Simulation::turnEverythingOff(){
@@ -304,6 +309,15 @@ void Simulation::simulation2(){
 
     switch(simulationStage){
         case 0:
+            if(!stagePartFinished[0]){
+                stagePartFinished[0] = ledStripScanner->rainbow(TIME_OF_RAINBOW, 1000);
+            }
+            if(!stagePartFinished[1]){
+                stagePartFinished[1] = ledStripDatastream->rainbow(TIME_OF_RAINBOW, 1000);
+            }
+            nextSimulationStage((stagePartFinished[0] && stagePartFinished[1]));
+            break;
+        case 1:
             nextSimulation(2);
             break;
         default:

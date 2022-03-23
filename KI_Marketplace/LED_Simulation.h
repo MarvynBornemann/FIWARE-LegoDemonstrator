@@ -5,7 +5,7 @@
 #include "LED_Strip.h"
 
 //Number of Simuations
-#define NUMBER_OF_LED_SIMULATIONS 3
+#define NUMBER_OF_LED_SIMULATIONS 5
 
 //LED Strips
 #define NUMBER_OF_LED_STRIPS 5
@@ -29,6 +29,9 @@
 #define LED_STRIP6_PIN 14
 #define NUMBER_OF_LEDS_STRIP6 7
 
+
+//Colors of LED strips
+
 //good online tool to choose colors
 //https://acrylgiessen.com/farben-mischen-online/
 
@@ -44,12 +47,14 @@ const COLOR colorLEDStrip3(0,255,145);
 const COLOR colorLEDStrip4(0,59,255);
 const COLOR colorLEDStrip5(246,0,255);
 
-const int ringIndexLEDStrip1 = 1;
-const int ringIndexLEDStrip2 = 3;
-const int ringIndexLEDStrip3 = 5;
+
+//Ring indecies of LED Strips
+const int ringIndexLEDStrip1 = 2;
+const int ringIndexLEDStrip2 = 4;
+const int ringIndexLEDStrip3 = 6;
 const int ringIndexLEDStrip4 = 7;
-const int ringIndexLEDStrip5 = 9;
-const int ringIndexLEDStrip6 = 11;
+const int ringIndexLEDStrip5 = 10;
+const int ringIndexLEDStrip6 = 0;
 
 //LED Ring
 #define LED_RING_PIN 2
@@ -58,8 +63,8 @@ const int ringIndexLEDStrip6 = 11;
 //Frequencies
 #define TIME_OF_COLOR_WIPE 50
 #define TIME_OF_RAINBOW 10
+#define TIME_OF_PAUSE 1000
 
-#define SIMULATION1_REPEATS 3
 
 class LED_Simulation
 {
@@ -77,40 +82,44 @@ class LED_Simulation
         LED_Strip* ledStripSecond;
         LED_Strip* ledStrips[NUMBER_OF_ALL_LED_STRIPS];
 
+        //LED Strip finished task
         bool ledStripsFinished[NUMBER_OF_ALL_LED_STRIPS] = {false};
         bool allLEDStripsFinished = false;
 
+        //Color managment of LED Strips
         COLOR colorFirst;
         COLOR colorSecond;
         COLOR colorMix;
         COLOR colors[NUMBER_OF_LED_STRIPS] = {colorLEDStrip1,colorLEDStrip2,colorLEDStrip3,colorLEDStrip4,colorLEDStrip5};
 
+        //Ring index managment
         int ringIndexFirst;
         int ringIndexSecond;
         int ringIndices[NUMBER_OF_LED_STRIPS] = {ringIndexLEDStrip1,ringIndexLEDStrip2,ringIndexLEDStrip3,ringIndexLEDStrip4,ringIndexLEDStrip5};
 
+        //Simulation Stage Managment
         int simulationStage = 0;
-        int simulationIndex = 0;
+        int simulationIndex = 1;
         bool simulationFinished = true;
 
         void nextSimulationStage(bool ledStripFinished);
+
+        //Helping functions for simulations
         void getRandomStrips();
         COLOR mix2Colors(COLOR color1, COLOR color2);
         bool ledRing_colorWipeShortestWay(int ringIndexStart, int ringIndexEnd);        
 
-        int counterSimulation1 = 0;
+        //Simulations
         void simulation1();
         void simulation2();
-
-        int counterSimulation3 = 0;
-        void simulation3(COLOR color);
-
-        int counterSimulation4 = 0;
+        void simulation3();
         void simulation4();
+        void simulation5();
 
+        //turn all LED strips off
         void clearAllStrips();
 
-
+        //Pause
         long pauseStartTime;
         bool setPauseStartTime = true;
         bool pause(long milliseconds);

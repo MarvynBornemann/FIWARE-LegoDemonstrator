@@ -37,6 +37,7 @@
 #define STEPS_OF_BLINK 15
 #define TIME_OF_PAUSE 1000
 #define TIME_OF_SERVO 20
+#define TIME_OF_RAINBOW 10
 
 
 //datastream for ledStrip
@@ -69,7 +70,7 @@ class Simulation
         int simulationStage = 0;
         int simulationIndex = 1;
         bool simulationFinished = true;
-
+        
         void nextSimulationStage(bool ledStripFinished);
 
         //Simulations

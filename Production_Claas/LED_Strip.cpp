@@ -230,3 +230,25 @@ bool LED_Strip::dataWipe(int wait, const bool datastream[], int datastreamLength
     }
     return 0;
 }
+
+
+// Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
+bool LED_Strip::rainbow(int wait, int numberOfRepeat) {
+    long _currentTime = millis();
+    if(_currentTime - _lastTime > wait) {
+        _lastTime = _currentTime;
+
+        for(int i=0; i<strip->numPixels(); i++) {
+            int pixelHue = rainbowFirstPixelHue + (i * 65536L / strip->numPixels());
+            strip->setPixelColor(i, strip->gamma32(strip->ColorHSV(pixelHue)));
+        }
+        strip->show();                            //  Update strip to match
+
+        rainbowFirstPixelHue += 265;
+        if(rainbowFirstPixelHue >= 65536){
+            rainbowFirstPixelHue = 0;
+            if(repeat(numberOfRepeat)) return 1;
+        }
+    }
+    return 0;
+}

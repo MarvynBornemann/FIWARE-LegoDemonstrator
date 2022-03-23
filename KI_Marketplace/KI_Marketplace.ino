@@ -33,6 +33,7 @@ DynamicJsonDocument jsonDoc(1024);
 
 //LED_Simulation
 LED_Simulation ledSimulation;
+int simulationIndex = 1;
 
 //LED_Bar
 LED_Bar ledBar1(DCKI_LED_BAR1_PIN, DI_LED_BAR1_PIN);
@@ -46,6 +47,7 @@ void setup() {
     mqtt.subscribe(mqtt_LED_cmd_topic);
 
     ledSimulation.setup();
+    ledSimulation.nextSimulation(simulationIndex);
 
     ledBar1.setup();
     ledBar2.setup();
@@ -81,6 +83,7 @@ void mqttCallback(String topic){
         if(LED_on != "null"){
             if(LED_on == ""){
                 jsonDoc["on"] = "LED is on!";
+                ledSimulation.nextSimulation(simulationIndex);
             }
             else{
                 jsonDoc["on"] = "Message body is wrong !";
@@ -91,6 +94,7 @@ void mqttCallback(String topic){
         else if(LED_off != "null"){
             if(LED_off == ""){
                 jsonDoc["off"] = "LED is off!";
+                ledSimulation.nextSimulation(0);
             }
             else{
                 jsonDoc["off"] = "Message body should be empty !";
@@ -101,10 +105,12 @@ void mqttCallback(String topic){
         else if(LED_simulation != "null"){
             int LED_simulation_int = LED_simulation.toInt();
             if(LED_simulation_int >= 0 && LED_simulation_int <= NUMBER_OF_LED_SIMULATIONS){
-                jsonDoc["mode"] = "LED is in mode " + LED_simulation;
+                jsonDoc["simulation"] = "LED runs simulation " + LED_simulation;
+                simulationIndex = LED_simulation_int;
+                ledSimulation.nextSimulation(simulationIndex);
             }
             else{
-                jsonDoc["mode"] = "Message body is wrong !";
+                jsonDoc["simulation"] = "Message body is wrong !";
             }
             serializeJson(jsonDoc, responseMessage);
             client.publish(mqtt_LED_cmdexe_topic, responseMessage.c_str());
