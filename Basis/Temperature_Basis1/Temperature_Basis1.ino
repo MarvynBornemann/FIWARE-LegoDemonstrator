@@ -15,7 +15,7 @@ const char* wifi_password = "!FIWARE!on!air!";
 const char* mqtt_server = "192.168.1.100";
 const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
-const char* mqtt_client_id = "Addix-ESP8266Temperature001";
+const char* mqtt_client_id = "Basis1-ESP8266Temperature001";
 
 const char* mqtt_temperature_topic = "/idFZy8D9KzFko7db/temperature001/attrs";
 const char* mqtt_windmills_cmd_topic = "/idFZy8D9KzFko7db/windmills001/cmd";
