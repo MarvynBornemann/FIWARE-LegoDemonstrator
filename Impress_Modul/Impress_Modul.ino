@@ -20,8 +20,8 @@
 #define FORCE_SENSOR2_PIN 35
 
 const float alpha = 0.05;
-const int frequencyOfDisplayWeight = 1;
-const int frequencyOfForceSensorReadings = 200;
+const int frequencyOfDisplayWeight = 1; //Hz
+const int frequencyOfForceSensorReadings = 200; //Hz
 
 //Connection variables
 const char* wifi_ssid = "FIWARE_fair";
