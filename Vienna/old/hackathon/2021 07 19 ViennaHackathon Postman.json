@@ -1,0 +1,919 @@
+{
+  "info": {
+    "name": "2021 07 19 ViennaHackathon.paw",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 General Info",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "https://ngsi-ld-tutorials.readthedocs.io/en/latest/iot-agent.html",
+          "query": null,
+          "protocol": "https",
+          "host": [
+            "ngsi-ld-tutorials",
+            "readthedocs",
+            "io"
+          ],
+          "port": null,
+          "path": [
+            "en",
+            "latest",
+            "iot-agent.html"
+          ]
+        },
+        "description": "The hackathon setup to control the Vienna Module is following the tutorial setup from the NGSI-LD / IoT Agent tutorial to be found here: https://ngsi-ld-tutorials.readthedocs.io/en/latest/iot-agent.html. \n\nThe Vienna Module is a remote edge device to be controlled via the Orion-LD Context Broker. There is a MQTT Broker and an IoT Agent working in the background, both are not and must not be accessible to the hackathon participants. All setup activities are done and the participants can start to control the Vienna LEGO module only with NGSI-LD interactions with the Orion-LD Context Broker.\n\nThe connection to the Vienna Module is unidirectional. You can only control elements on/to the Vienna Module. There are no sensor readings realized from the Vienna Module so far. \n\nFor controlling the LEGO module you just have to make a PATCH HTTP-Call as shown below. You can find a working demo call for all available commands. Additional details can be found in the individual call descriptions. It is following the descriptions to be found here: https://ngsi-ld-tutorials.readthedocs.io/en/latest/iot-agent-json.html#southbound-traffic-commands\n\nTo start a control command just release one of the following PATCH HTTP-Call-Commands to update the individual command on the Vienna Module. Please look out for logical sequences of in the individual descriptions and do not inject commands on a high fequency. Best wait 5-10 seconds before releasing next calls, the Vienna Module is build from LEGO Bricks and is a toy, not an industrial application. \n\nFor each of the existing commands you will find 2 Attributes in the Entity named \"urn:ngsi-ld:Device:vienna-legomodule-001\", i.e. Command HOUSE_DEMO -> ENABLE\nHOUSE_DEMO_status should show the value \"OK\" for successful command execution \nHOUSE_DEMO_info should show a command confirmation like: \"HOUSE_DEMO ENABLED\"\n\nAnd please be cautious when controlling the Vienna Module, do not abuse it. ",
+        "header": [],
+        "body": null,
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "01 Check Entitiy and Attribute values",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001"
+          ]
+        },
+        "description": "Read the control values from the urn:ngsi-ld:Device:vienna-legomodule-001 NGSI-LD-Entity.",
+        "header": [
+          {
+            "key": "Fiware-Service",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Fiware-Servicepath",
+            "value": "/",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": null,
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "02 Update HOUSE_DEMO -> ENABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_DEMO",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_DEMO"
+          ]
+        },
+        "description": "Enable automatic changes of the town hall lightings.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"ENABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "03 Update HOUSE_DEMO -> DISABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_DEMO",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_DEMO"
+          ]
+        },
+        "description": "Disable automatic changes of the town hall lightings.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"DISABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "04 Update HOUSE_RGB -> 3 RGB color values",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_RGB",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_RGB"
+          ]
+        },
+        "description": "Please always disable the automatic changes of the town hall lightings with call \"03 Update HOUSE_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nFor changing the town hall lightings with your own mixed colors, please change the payload of this PATCH command to your individual RGB values. Values are to be named in R G B sequence separated with one space between the values. Values have to be between 0 and 255.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"111 112 113\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "05 Update HOUSE_R -> 1 RGB color R value",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_R",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_R"
+          ]
+        },
+        "description": "Please always disable the automatic changes of the town hall lightings with call \"03 Update HOUSE_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nFor changing the town hall lightings with your own R color value, please change the payload of this PATCH command to your individual R value. This call is only to address the R value in the range between 0 and 255.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"111\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "06 Update HOUSE_G -> 1 RGB color G value",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_G",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_G"
+          ]
+        },
+        "description": "Please always disable the automatic changes of the town hall lightings with call \"03 Update HOUSE_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nFor changing the town hall lightings with your own G color value, please change the payload of this PATCH command to your individual G value. This call is only to address the G value in the range between 0 and 255.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"112\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "07 Update HOUSE_B -> 1 RGB color B value",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/HOUSE_B",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "HOUSE_B"
+          ]
+        },
+        "description": "Please always disable the automatic changes of the town hall lightings with call \"03 Update HOUSE_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nFor changing the town hall lightings with your own B color value, please change the payload of this PATCH command to your individual B value. This call is only to address the B value in the range between 0 and 255.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"113\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "08 Update FERRIS -> ENABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/FERRIS",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "FERRIS"
+          ]
+        },
+        "description": "Enable turning of the Ferris wheel.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"ENABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "09 Update FERRIS -> DISABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/FERRIS",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "FERRIS"
+          ]
+        },
+        "description": "Disable turning of the Ferris wheel.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"DISABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "10 Update METRO_DEMO -> ENABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_DEMO",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_DEMO"
+          ]
+        },
+        "description": "Enable automatic operation of the 2 metro lines 1 and 2.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"ENABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "11 Update METRO_DEMO -> DISABLE",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_DEMO",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_DEMO"
+          ]
+        },
+        "description": "Disable automatic operation of the 2 metro lines 1 and 2.",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"DISABLE\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "12 Update METRO_1_DRIVE_Station - go to Station",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_1_DRIVE",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_1_DRIVE"
+          ]
+        },
+        "description": "Please always disable the automatic operation of the METRO Demo with call \"11 Update METRO_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nCommand Metro 1 to drive into the station to stop and wait there.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"INTO_STATION\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "13 Update METRO_1_DRIVE_Tunnel - go to Tunnel",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_1_DRIVE",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_1_DRIVE"
+          ]
+        },
+        "description": "Please always disable the automatic operation of the METRO Demo with call \"11 Update METRO_DEMO -> DISABLE\" before using this command to avoid strange behaviour.  \n\nCommand Metro 1 to drive into the tunnel to stop and wait there.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"INTO_TUNNEL\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "14 Update METRO_2_DRIVE_Station - go to Station",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_2_DRIVE",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_2_DRIVE"
+          ]
+        },
+        "description": "Please always disable the automatic operation of the METRO Demo with call \"11 Update METRO_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\nCommand Metro 2 to drive into the station to stop and wait there.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"INTO_STATION\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    },
+    {
+      "name": "15 Update METRO_2_DRIVE_Tunnel - go to Tunnel",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://46.17.108.109:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Device:vienna-legomodule-001/attrs/METRO_2_DRIVE",
+          "query": null,
+          "protocol": "http",
+          "host": [
+            "46",
+            "17",
+            "108",
+            "109"
+          ],
+          "port": "1026",
+          "path": [
+            "ngsi-ld",
+            "v1",
+            "entities",
+            "urn:ngsi-ld:Device:vienna-legomodule-001",
+            "attrs",
+            "METRO_2_DRIVE"
+          ]
+        },
+        "description": "Please always disable the automatic operation of the METRO Demo with call \"11 Update METRO_DEMO -> DISABLE\" before using this command to avoid strange behaviour. \n\n\nCommand Metro 2 to drive into the tunnel to stop and wait there.\n",
+        "header": [
+          {
+            "key": "NGSILD-Tenant",
+            "value": "openiot",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "description": null
+          },
+          {
+            "key": "Link",
+            "value": "<http://context/ngsi-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"",
+            "disabled": false,
+            "description": null
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "disabled": false,
+          "raw": "{\"type\":\"Property\",\"value\":\"INTO_TUNNEL\"}"
+        },
+        "auth": null
+      },
+      "protocolProfileBehavior": {
+        "followRedirects": false,
+        "followOriginalHttpMethod": false,
+        "followAuthorizationHeader": false
+      },
+      "response": []
+    }
+  ]
+}
