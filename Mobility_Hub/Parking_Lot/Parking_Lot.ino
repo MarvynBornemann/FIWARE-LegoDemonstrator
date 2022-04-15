@@ -1,0 +1,130 @@
+#include "MQTT.h"
+#include "OLED_Display.h"
+#include <Ultrasonic.h>
+
+//------------changeable-variables---------------------------------
+//Connection variables
+const char* wifi_ssid = "FIWARE_fair";
+const char* wifi_password = "!FIWARE!on!air!";
+
+const char* mqtt_server = "192.168.1.100";
+const char* mqtt_username = "LegoDemonstrator";
+const char* mqtt_password = "Lego12Demo34nstr56ator";
+const char* mqtt_client_id = "Mobility-ESP8266ParkingLot";
+
+const char* mqtt_parkingLot001_topic = "/idFZy8D9KzFko7db/parkingLot001/attrs";
+const char* mqtt_parkingLot002_topic = "/idFZy8D9KzFko7db/parkingLot002/attrs";
+const char* mqtt_parkingLot003_topic = "/idFZy8D9KzFko7db/parkingLot003/attrs";
+const char* mqtt_parkingLot004_topic = "/idFZy8D9KzFko7db/parkingLot004/attrs";
+
+//OLED Display variables
+const int OLED_DISPLAY_SCL_PIN = 5;
+const int OLED_DISPLAY_SCA_PIN = 4;
+
+//Ultrasonic sensors
+const int ULTRASONIC1_TRIGGER_PIN = 3;
+const int ULTRASONIC1_ECHO_PIN = 1;
+const int ULTRASONIC2_TRIGGER_PIN = 13;
+const int ULTRASONIC2_ECHO_PIN = 15;
+const int ULTRASONIC3_TRIGGER_PIN = 14;
+const int ULTRASONIC3_ECHO_PIN = 12;
+const int ULTRASONIC4_TRIGGER_PIN = 0;
+const int ULTRASONIC4_ECHO_PIN = 2;
+
+
+//sensor reading variables
+const int frequencyOfSensorReadings = 1; //Hz
+const int distanceThreshold = 10; //cm
+
+//-----------non-changeable-variables-----------------------------------
+//Ultrasonic sensors
+Ultrasonic ultrasonic1(ULTRASONIC1_TRIGGER_PIN, ULTRASONIC1_ECHO_PIN);
+Ultrasonic ultrasonic2(ULTRASONIC2_TRIGGER_PIN, ULTRASONIC2_ECHO_PIN);
+Ultrasonic ultrasonic3(ULTRASONIC3_TRIGGER_PIN, ULTRASONIC3_ECHO_PIN);
+Ultrasonic ultrasonic4(ULTRASONIC4_TRIGGER_PIN, ULTRASONIC4_ECHO_PIN);
+
+//OLED Display variables
+OLED_Display oledDisplay(OLED_DISPLAY_SCA_PIN, OLED_DISPLAY_SCL_PIN);
+
+//MQTT
+WiFiClient espClient;
+PubSubClient client(espClient);
+MQTT mqtt(wifi_ssid, wifi_password, mqtt_server, mqtt_username, mqtt_password, mqtt_client_id);
+
+//JSON
+DynamicJsonDocument jsonDoc(1024);
+
+//variables
+unsigned long lastTime = 0;
+
+int countSensorReadings = 0;
+
+unsigned int distanceUltrasonic1 = 0;
+unsigned int distanceUltrasonic2 = 0;
+unsigned int distanceUltrasonic3 = 0;
+unsigned int distanceUltrasonic4 = 0;
+
+bool parkingLot1_available = false;
+bool parkingLot2_available = false;
+bool parkingLot3_available = false;
+bool parkingLot4_available = false;
+
+
+void setup() { 
+    //Serial.begin(115200);
+    oledDisplay.setup();
+
+    mqtt.setup();
+}
+
+void loop() {
+    mqtt.loop();
+
+    unsigned long currentTime = millis();
+    unsigned long diffTime = currentTime - lastTime;
+
+    if(diffTime > 1000/frequencyOfSensorReadings){
+        lastTime = currentTime;
+
+        countSensorReadings++;
+
+        //read sensors
+        distanceUltrasonic1 = ultrasonic1.read();
+        distanceUltrasonic2 = ultrasonic2.read();
+        distanceUltrasonic3 = ultrasonic3.read();
+        distanceUltrasonic4 = ultrasonic4.read();
+
+        if(distanceUltrasonic1 > distanceThreshold) parkingLot1_available = true;
+        else parkingLot1_available = false;
+        if(distanceUltrasonic2 > distanceThreshold) parkingLot2_available = true;
+        else parkingLot2_available = false;
+        if(distanceUltrasonic3 > distanceThreshold) parkingLot3_available = true;
+        else parkingLot3_available = false;
+        if(distanceUltrasonic4 > distanceThreshold) parkingLot4_available = true;
+        else parkingLot4_available = false;
+
+        //mqtt
+        mqtt.send(mqtt_parkingLot001_topic, "distanceUltrasonic", distanceUltrasonic1);
+        mqtt.send(mqtt_parkingLot001_topic, "available", parkingLot1_available);
+        mqtt.send(mqtt_parkingLot002_topic, "distanceUltrasonic", distanceUltrasonic2);
+        mqtt.send(mqtt_parkingLot002_topic, "available", parkingLot2_available);
+        mqtt.send(mqtt_parkingLot003_topic, "distanceUltrasonic", distanceUltrasonic3);
+        mqtt.send(mqtt_parkingLot003_topic, "available", parkingLot3_available);
+        mqtt.send(mqtt_parkingLot004_topic, "distanceUltrasonic", distanceUltrasonic4);
+        mqtt.send(mqtt_parkingLot004_topic, "available", parkingLot4_available);
+
+
+        if(countSensorReadings < 4){
+            int numberOfFreeParkingLots = parkingLot1_available + parkingLot2_available + parkingLot3_available + parkingLot4_available;
+            oledDisplay.displayParkingSign(numberOfFreeParkingLots);
+        }else if(countSensorReadings > 10){
+            countSensorReadings = 0;
+        }else{
+            oledDisplay.displayParkingLots(parkingLot1_available, parkingLot2_available, parkingLot3_available, parkingLot4_available);
+        }
+    }    
+}
+
+void mqttCallback(String topic){
+    Serial.println(topic);
+}
