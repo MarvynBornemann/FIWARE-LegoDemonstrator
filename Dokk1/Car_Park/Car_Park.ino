@@ -8,9 +8,9 @@ const char* wifi_password = "!FIWARE!on!air!";
 const char* mqtt_server = "192.168.1.100";
 const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
-const char* mqtt_client_id = "Dokk1-ESP8266ParkingLot";
+const char* mqtt_client_id = "Dokk1-ESP8266CarPark";
 
-const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/parkingLot001/attrs";
+const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/carPark001/attrs";
 
 //OLED Display variables
 const int WIO_NODE_SCL_PIN = 4;
