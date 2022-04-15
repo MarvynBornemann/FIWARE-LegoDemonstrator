@@ -110,9 +110,7 @@ void loop() {
         }else{
             oledDisplay.displayBoatBerths(boatBerth1_available, boatBerth2_available, boatBerth3_available);
         }
-    }
-
-    
+    }    
 }
 
 void mqttCallback(String topic){
