@@ -41,7 +41,7 @@ LED_Bar ledBar2(DCKI_LED_BAR2_PIN, DI_LED_BAR2_PIN);
 
 //-----------------------setup-----------------------------------------
 void setup() {
-    Serial.begin(115200);
+    //Serial.begin(115200);
 
     mqtt.setup();
     mqtt.subscribe(mqtt_LED_cmd_topic);

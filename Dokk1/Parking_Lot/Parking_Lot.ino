@@ -40,7 +40,7 @@ void setup() {
   pinMode(15, OUTPUT);
   digitalWrite(15, 1);  
   
-  Serial.begin(115200);
+  //Serial.begin(115200);
   oledDisplay.setup();
 
   mqtt.setup();

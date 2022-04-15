@@ -64,7 +64,7 @@ bool boatBerth3_available = false;
 
 
 void setup() { 
-    Serial.begin(115200);
+    //Serial.begin(115200);
     oledDisplay.setup();
 
     mqtt.setup();

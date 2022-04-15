@@ -30,7 +30,7 @@ int simulationIndex = 1;
 
 //-----------------------setup-----------------------------------------
 void setup() {
-    Serial.begin(115200);
+    //Serial.begin(115200);
 
     mqtt.setup();
     mqtt.subscribe(mqtt_LED_cmd_topic);
