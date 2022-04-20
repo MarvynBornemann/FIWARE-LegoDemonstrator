@@ -38,11 +38,11 @@ void OLED_Display::displayParkingSign(int numberOfFreeBoatBerths){
 
     oledDisplay->drawBitmap(0, 0, Parking, 64, 64, SSD1306_WHITE);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
     oledDisplay->print(" ");
     oledDisplay->println(numberOfFreeBoatBerths);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 20);
     oledDisplay->setTextSize(1); 
     oledDisplay->println("  spaces");
 
@@ -57,13 +57,13 @@ void OLED_Display::displayBoatBerths(bool boatBerth1_available, bool boatBerth2_
 
     //core setup of boat berths
     oledDisplay->drawRect(0,0,40,SCREEN_HEIGHT, SSD1306_WHITE);
-    oledDisplay->setCursor(16,3);
+    oledDisplay->setCursor(16,2);
     oledDisplay->print("1");
     oledDisplay->drawRect(44,0,40,SCREEN_HEIGHT, SSD1306_WHITE);
-    oledDisplay->setCursor(60,3);
+    oledDisplay->setCursor(60,2);
     oledDisplay->print("2");
     oledDisplay->drawRect(88,0,40,SCREEN_HEIGHT, SSD1306_WHITE);
-    oledDisplay->setCursor(104,3);
+    oledDisplay->setCursor(104,2);
     oledDisplay->print("3");
 
     //draw sailboat if boat berths is not available

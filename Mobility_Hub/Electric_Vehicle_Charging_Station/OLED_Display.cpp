@@ -38,11 +38,11 @@ void OLED_Display::displayElectricChargingSign(int numberOfFreeParkingLots){
 
     oledDisplay->drawBitmap(0, 0, ElectricChargingSign, 64, 64, SSD1306_WHITE);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
     oledDisplay->print(" ");
     oledDisplay->println(numberOfFreeParkingLots);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 20);
     oledDisplay->setTextSize(1); 
     oledDisplay->println("  spaces");
 
@@ -57,21 +57,21 @@ void OLED_Display::displayElectricChargingProgress(bool parkingLot1_available, b
 
     //core setup of boat berths
     oledDisplay->drawRect(0,0,62,SCREEN_HEIGHT, SSD1306_WHITE);
-    oledDisplay->setCursor(5,3);
+    oledDisplay->setCursor(5,2);
     oledDisplay->print("1");
     oledDisplay->drawRect(66,0,62,SCREEN_HEIGHT, SSD1306_WHITE);
-    oledDisplay->setCursor(71,3);
+    oledDisplay->setCursor(71,2);
     oledDisplay->print("2");
 
     //draw sailboat if boat berths is not available
     if(!parkingLot1_available){
-        oledDisplay->drawBitmap(30,3,Hourglass,32,32,SSD1306_WHITE);
+        oledDisplay->drawBitmap(30,2,Hourglass,32,32,SSD1306_WHITE);
         oledDisplay->setCursor(5,35);
         oledDisplay->print(remainingTimeForFullCharge1);
         oledDisplay->print(" s");
     }
     if(!parkingLot2_available){
-        oledDisplay->drawBitmap(96,3,Hourglass,32,32,SSD1306_WHITE);
+        oledDisplay->drawBitmap(96,2,Hourglass,32,32,SSD1306_WHITE);
         oledDisplay->setCursor(71,35);
         oledDisplay->print(remainingTimeForFullCharge2);
         oledDisplay->print(" s");

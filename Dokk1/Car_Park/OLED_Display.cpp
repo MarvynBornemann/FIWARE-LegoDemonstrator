@@ -53,11 +53,11 @@ void OLED_Display::drawBitmap(int numberOfFreeParkingLots){
 
     oledDisplay->drawBitmap(0, 0, Parking, 64, 64, SSD1306_WHITE);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,20);
     oledDisplay->print(" ");
     oledDisplay->println(numberOfFreeParkingLots);
 
-    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 10);
+    oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 20);
     oledDisplay->setTextSize(1); 
     oledDisplay->println("  spaces");
 
