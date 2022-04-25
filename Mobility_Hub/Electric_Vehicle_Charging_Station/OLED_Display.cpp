@@ -20,6 +20,8 @@ void OLED_Display::setup() {
         for(;;); // Don't proceed, loop forever
     }
 
+    oledDisplay->setRotation(2);
+
     // Show initial display buffer contents on the screen --
     // the library initializes this with an Adafruit splash screen.
     oledDisplay->display();

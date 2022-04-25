@@ -21,15 +21,13 @@ const int OLED_DISPLAY_SCL_PIN = 5;
 const int OLED_DISPLAY_SCA_PIN = 4;
 
 //Ultrasonic sensors
-const int ULTRASONIC1_TRIGGER_PIN = 3;
-const int ULTRASONIC1_ECHO_PIN = 1;
-const int ULTRASONIC2_TRIGGER_PIN = 13;
-const int ULTRASONIC2_ECHO_PIN = 15;
+const int ULTRASONIC1_PIN = 12;
+const int ULTRASONIC2_PIN = 14;
 
 //LED Bar Graph
-const int DI_LED_BAR1_PIN = 14;
-const int DCKI_LED_BAR1_PIN = 12;
-const int DI_LED_BAR2_PIN = 0;
+const int DI_LED_BAR1_PIN = 3;
+const int DCKI_LED_BAR1_PIN = 1;
+const int DI_LED_BAR2_PIN = 13;
 const int DCKI_LED_BAR2_PIN = 2;
 
 //sensor reading variables
@@ -38,8 +36,8 @@ const int distanceThreshold = 6; //cm
 
 //-----------non-changeable-variables-----------------------------------
 //Ultrasonic sensors
-Ultrasonic ultrasonic1(ULTRASONIC1_TRIGGER_PIN, ULTRASONIC1_ECHO_PIN);
-Ultrasonic ultrasonic2(ULTRASONIC2_TRIGGER_PIN, ULTRASONIC2_ECHO_PIN);
+Ultrasonic ultrasonic1(ULTRASONIC1_PIN);
+Ultrasonic ultrasonic2(ULTRASONIC2_PIN);
 
 //LED_Bar
 LED_Bar ledBar1(DCKI_LED_BAR1_PIN, DI_LED_BAR1_PIN);
@@ -81,7 +79,11 @@ int remainingTimeForFullCharge1 = 0;
 int remainingTimeForFullCharge2 = 0;
 
 
-void setup() { 
+void setup() {
+    //Wio node -> make port available
+    pinMode(15, OUTPUT);
+    digitalWrite(15, 1);  
+    
     //Serial.begin(115200);
     oledDisplay.setup();
 

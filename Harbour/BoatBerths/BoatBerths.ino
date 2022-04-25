@@ -21,12 +21,13 @@ const int OLED_DISPLAY_SCL_PIN = 5;
 const int OLED_DISPLAY_SCA_PIN = 4;
 
 //Ultrasonic sensors
-const int ULTRASONIC1_TRIGGER_PIN = 13;
-const int ULTRASONIC1_ECHO_PIN = 15;
+const int ULTRASONIC1_TRIGGER_PIN = 0;
+const int ULTRASONIC1_ECHO_PIN = 2;
 const int ULTRASONIC2_TRIGGER_PIN = 14;
 const int ULTRASONIC2_ECHO_PIN = 12;
-const int ULTRASONIC3_TRIGGER_PIN = 0;
-const int ULTRASONIC3_ECHO_PIN = 2;
+const int ULTRASONIC3_TRIGGER_PIN = 13;
+const int ULTRASONIC3_ECHO_PIN = 15;
+
 
 //sensor reading variables
 const int frequencyOfSensorReadings = 1; //Hz

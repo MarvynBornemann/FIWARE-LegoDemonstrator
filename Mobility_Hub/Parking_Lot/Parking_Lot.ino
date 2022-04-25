@@ -22,14 +22,10 @@ const int OLED_DISPLAY_SCL_PIN = 5;
 const int OLED_DISPLAY_SCA_PIN = 4;
 
 //Ultrasonic sensors
-const int ULTRASONIC1_TRIGGER_PIN = 3;
-const int ULTRASONIC1_ECHO_PIN = 1;
-const int ULTRASONIC2_TRIGGER_PIN = 13;
-const int ULTRASONIC2_ECHO_PIN = 15;
-const int ULTRASONIC3_TRIGGER_PIN = 14;
-const int ULTRASONIC3_ECHO_PIN = 12;
-const int ULTRASONIC4_TRIGGER_PIN = 0;
-const int ULTRASONIC4_ECHO_PIN = 2;
+const int ULTRASONIC1_PIN = 14;
+const int ULTRASONIC2_PIN = 12;
+const int ULTRASONIC3_PIN = 13;
+const int ULTRASONIC4_PIN = 3;
 
 
 //sensor reading variables
@@ -38,10 +34,10 @@ const int distanceThreshold = 10; //cm
 
 //-----------non-changeable-variables-----------------------------------
 //Ultrasonic sensors
-Ultrasonic ultrasonic1(ULTRASONIC1_TRIGGER_PIN, ULTRASONIC1_ECHO_PIN);
-Ultrasonic ultrasonic2(ULTRASONIC2_TRIGGER_PIN, ULTRASONIC2_ECHO_PIN);
-Ultrasonic ultrasonic3(ULTRASONIC3_TRIGGER_PIN, ULTRASONIC3_ECHO_PIN);
-Ultrasonic ultrasonic4(ULTRASONIC4_TRIGGER_PIN, ULTRASONIC4_ECHO_PIN);
+Ultrasonic ultrasonic1(ULTRASONIC1_PIN);
+Ultrasonic ultrasonic2(ULTRASONIC2_PIN);
+Ultrasonic ultrasonic3(ULTRASONIC3_PIN);
+Ultrasonic ultrasonic4(ULTRASONIC4_PIN);
 
 //OLED Display variables
 OLED_Display oledDisplay(OLED_DISPLAY_SCA_PIN, OLED_DISPLAY_SCL_PIN);
@@ -71,6 +67,10 @@ bool parkingLot4_available = false;
 
 
 void setup() { 
+    //Wio node -> make port available
+    pinMode(15, OUTPUT);
+    digitalWrite(15, 1);  
+
     //Serial.begin(115200);
     oledDisplay.setup();
 
