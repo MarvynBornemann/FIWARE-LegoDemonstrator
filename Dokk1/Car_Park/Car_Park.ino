@@ -44,6 +44,8 @@ void setup() {
   oledDisplay.setup();
 
   mqtt.setup();
+
+  numberOfFreeParkingLots = random(300,600);
 }
 
 void loop() {
@@ -55,7 +57,20 @@ void loop() {
   if(diffTime > 10000){
     lastTime = currentTime;
 
-    numberOfFreeParkingLots = random(1000);
+    int randomNumber = random(10);
+
+    if(randomNumber > 4){
+      numberOfFreeParkingLots -= (randomNumber - 4);
+    }else{
+      numberOfFreeParkingLots += randomNumber;
+    }
+
+    if(numberOfFreeParkingLots > 1000){
+      numberOfFreeParkingLots = 1000;
+    }
+    if(numberOfFreeParkingLots < 0){
+      numberOfFreeParkingLots = 0;
+    }
     
     oledDisplay.drawBitmap(numberOfFreeParkingLots);
     mqtt.send(mqtt_parkingLot_topic, "parkingLot", numberOfFreeParkingLots);
