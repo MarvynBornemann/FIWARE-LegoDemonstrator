@@ -56,4 +56,5 @@ class MQTT
         void setup();
         void loop();
         void send(const char* topic, const char* sensor, float measurement);
+        void send(const char* topic, const char* attribute, const char* string);
 };

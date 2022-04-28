@@ -12,9 +12,9 @@ const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "Harbour-ESP8266BoatBerths";
 
-const char* mqtt_boatBerth001_topic = "/idFZy8D9KzFko7db/boatBerth001/attrs";
-const char* mqtt_boatBerth002_topic = "/idFZy8D9KzFko7db/boatBerth002/attrs";
-const char* mqtt_boatBerth003_topic = "/idFZy8D9KzFko7db/boatBerth003/attrs";
+const char* mqtt_boatBerth001_topic = "/idFZy8D9KzFko7db/ParkingSpot:Harbour:1/attrs";
+const char* mqtt_boatBerth002_topic = "/idFZy8D9KzFko7db/ParkingSpot:Harbour:2/attrs";
+const char* mqtt_boatBerth003_topic = "/idFZy8D9KzFko7db/ParkingSpot:Harbour:3/attrs";
 
 //OLED Display variables
 const int OLED_DISPLAY_SCL_PIN = 5;
@@ -95,12 +95,12 @@ void loop() {
         else boatBerth3_available = false;
 
         //mqtt
-        mqtt.send(mqtt_boatBerth001_topic, "distanceUltrasonic", distanceUltrasonic1);
-        mqtt.send(mqtt_boatBerth001_topic, "available", boatBerth1_available);
-        mqtt.send(mqtt_boatBerth002_topic, "distanceUltrasonic", distanceUltrasonic2);
-        mqtt.send(mqtt_boatBerth002_topic, "available", boatBerth2_available);
-        mqtt.send(mqtt_boatBerth003_topic, "distanceUltrasonic", distanceUltrasonic3);
-        mqtt.send(mqtt_boatBerth003_topic, "available", boatBerth3_available);
+        if(boatBerth1_available) mqtt.send(mqtt_boatBerth001_topic, "status", "free");
+        else mqtt.send(mqtt_boatBerth001_topic, "status", "occupied");
+        if(boatBerth2_available) mqtt.send(mqtt_boatBerth002_topic, "status", "free");
+        else mqtt.send(mqtt_boatBerth002_topic, "status", "occupied");
+        if(boatBerth3_available) mqtt.send(mqtt_boatBerth003_topic, "status", "free");
+        else mqtt.send(mqtt_boatBerth003_topic, "status", "occupied");
 
 
         if(countSensorReadings < 4){
