@@ -31,7 +31,7 @@ void OLED_Display::prepare() {
     oledDisplay->setCursor(0,0);
 }
 
-void OLED_Display::displayParkingSign(int numberOfFreeParkingLots){
+void OLED_Display::displayParkingSign(int numberOfFreeParkingSpots){
     //clear and prepare Display
     oledDisplay->clearDisplay();
     prepare();
@@ -40,7 +40,7 @@ void OLED_Display::displayParkingSign(int numberOfFreeParkingLots){
 
     oledDisplay->setCursor(SCREEN_WIDTH/2,20);
     oledDisplay->print(" ");
-    oledDisplay->println(numberOfFreeParkingLots);
+    oledDisplay->println(numberOfFreeParkingSpots);
 
     oledDisplay->setCursor(SCREEN_WIDTH/2,SCREEN_HEIGHT/2 + 20);
     oledDisplay->setTextSize(1); 
@@ -50,7 +50,7 @@ void OLED_Display::displayParkingSign(int numberOfFreeParkingLots){
     oledDisplay->display();
 }
 
-void OLED_Display::displayParkingLots(bool parkingLot1_available, bool parkingLot2_available, bool parkingLot3_available, bool parkingLot4_available){
+void OLED_Display::displayParkingSpots(bool parkingSpot1_available, bool parkingSpot2_available, bool parkingSpot3_available, bool parkingSpot4_available){
     //clear and prepare Display
     oledDisplay->clearDisplay();
     prepare();
@@ -70,16 +70,16 @@ void OLED_Display::displayParkingLots(bool parkingLot1_available, bool parkingLo
     oledDisplay->print("4");
 
     //draw sailboat if boat berths is not available
-    if(!parkingLot1_available){
+    if(!parkingSpot1_available){
         oledDisplay->drawBitmap(1,30,Car,29,29,SSD1306_WHITE);
     }
-    if(!parkingLot2_available){
+    if(!parkingSpot2_available){
         oledDisplay->drawBitmap(33,30,Car,29,29,SSD1306_WHITE);
     }
-    if(!parkingLot3_available){
+    if(!parkingSpot3_available){
         oledDisplay->drawBitmap(65,30,Car,29,29,SSD1306_WHITE);
     }
-    if(!parkingLot4_available){
+    if(!parkingSpot4_available){
         oledDisplay->drawBitmap(97,30,Car,29,29,SSD1306_WHITE);
     }
 

@@ -85,6 +85,6 @@ class OLED_Display
         
         void setup();
 
-        void displayParkingSign(int numberOfFreeParkingLots);
-        void displayParkingLots(bool parkingLot1_available, bool parkingLot2_available, bool parkingLot3_available, bool parkingLot4_available);
+        void displayParkingSign(int numberOfFreeParkingSpots);
+        void displayParkingSpots(bool parkingSpot1_available, bool parkingSpot2_available, bool parkingSpot3_available, bool parkingSpot4_available);
 };

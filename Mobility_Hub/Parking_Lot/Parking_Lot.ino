@@ -10,12 +10,12 @@ const char* wifi_password = "!FIWARE!on!air!";
 const char* mqtt_server = "192.168.1.100";
 const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
-const char* mqtt_client_id = "Mobility-ESP8266ParkingLot";
+const char* mqtt_client_id = "Mobility-ESP8266ParkingSpot";
 
-const char* mqtt_parkingLot001_topic = "/idFZy8D9KzFko7db/parkingLot001/attrs";
-const char* mqtt_parkingLot002_topic = "/idFZy8D9KzFko7db/parkingLot002/attrs";
-const char* mqtt_parkingLot003_topic = "/idFZy8D9KzFko7db/parkingLot003/attrs";
-const char* mqtt_parkingLot004_topic = "/idFZy8D9KzFko7db/parkingLot004/attrs";
+const char* mqtt_parkingSpot001_topic = "/idFZy8D9KzFko7db/ParkingSpot:Mobility_Hub:1/attrs";
+const char* mqtt_parkingSpot002_topic = "/idFZy8D9KzFko7db/ParkingSpot:Mobility_Hub:2/attrs";
+const char* mqtt_parkingSpot003_topic = "/idFZy8D9KzFko7db/ParkingSpot:Mobility_Hub:3/attrs";
+const char* mqtt_parkingSpot004_topic = "/idFZy8D9KzFko7db/ParkingSpot:Mobility_Hub:4/attrs";
 
 //OLED Display variables
 const int OLED_DISPLAY_SCL_PIN = 5;
@@ -60,10 +60,10 @@ unsigned int distanceUltrasonic2 = 0;
 unsigned int distanceUltrasonic3 = 0;
 unsigned int distanceUltrasonic4 = 0;
 
-bool parkingLot1_available = false;
-bool parkingLot2_available = false;
-bool parkingLot3_available = false;
-bool parkingLot4_available = false;
+bool parkingSpot1_available = false;
+bool parkingSpot2_available = false;
+bool parkingSpot3_available = false;
+bool parkingSpot4_available = false;
 
 
 void setup() { 
@@ -94,33 +94,32 @@ void loop() {
         distanceUltrasonic3 = ultrasonic3.read();
         distanceUltrasonic4 = ultrasonic4.read();
 
-        if(distanceUltrasonic1 > distanceThreshold) parkingLot1_available = true;
-        else parkingLot1_available = false;
-        if(distanceUltrasonic2 > distanceThreshold) parkingLot2_available = true;
-        else parkingLot2_available = false;
-        if(distanceUltrasonic3 > distanceThreshold) parkingLot3_available = true;
-        else parkingLot3_available = false;
-        if(distanceUltrasonic4 > distanceThreshold) parkingLot4_available = true;
-        else parkingLot4_available = false;
+        if(distanceUltrasonic1 > distanceThreshold) parkingSpot1_available = true;
+        else parkingSpot1_available = false;
+        if(distanceUltrasonic2 > distanceThreshold) parkingSpot2_available = true;
+        else parkingSpot2_available = false;
+        if(distanceUltrasonic3 > distanceThreshold) parkingSpot3_available = true;
+        else parkingSpot3_available = false;
+        if(distanceUltrasonic4 > distanceThreshold) parkingSpot4_available = true;
+        else parkingSpot4_available = false;
 
         //mqtt
-        mqtt.send(mqtt_parkingLot001_topic, "distanceUltrasonic", distanceUltrasonic1);
-        mqtt.send(mqtt_parkingLot001_topic, "available", parkingLot1_available);
-        mqtt.send(mqtt_parkingLot002_topic, "distanceUltrasonic", distanceUltrasonic2);
-        mqtt.send(mqtt_parkingLot002_topic, "available", parkingLot2_available);
-        mqtt.send(mqtt_parkingLot003_topic, "distanceUltrasonic", distanceUltrasonic3);
-        mqtt.send(mqtt_parkingLot003_topic, "available", parkingLot3_available);
-        mqtt.send(mqtt_parkingLot004_topic, "distanceUltrasonic", distanceUltrasonic4);
-        mqtt.send(mqtt_parkingLot004_topic, "available", parkingLot4_available);
-
+        if(parkingSpot1_available) mqtt.send(mqtt_parkingSpot001_topic, "status", "free");
+        else mqtt.send(mqtt_parkingSpot001_topic, "status", "occupied");
+        if(parkingSpot2_available) mqtt.send(mqtt_parkingSpot002_topic, "status", "free");
+        else mqtt.send(mqtt_parkingSpot002_topic, "status", "occupied");
+        if(parkingSpot3_available) mqtt.send(mqtt_parkingSpot003_topic, "status", "free");
+        else mqtt.send(mqtt_parkingSpot003_topic, "status", "occupied");
+        if(parkingSpot4_available) mqtt.send(mqtt_parkingSpot004_topic, "status", "free");
+        else mqtt.send(mqtt_parkingSpot004_topic, "status", "occupied");
 
         if(countSensorReadings < 4){
-            int numberOfFreeParkingLots = parkingLot1_available + parkingLot2_available + parkingLot3_available + parkingLot4_available;
-            oledDisplay.displayParkingSign(numberOfFreeParkingLots);
+            int numberOfFreeParkingSpots = parkingSpot1_available + parkingSpot2_available + parkingSpot3_available + parkingSpot4_available;
+            oledDisplay.displayParkingSign(numberOfFreeParkingSpots);
         }else if(countSensorReadings > 10){
             countSensorReadings = 0;
         }else{
-            oledDisplay.displayParkingLots(parkingLot1_available, parkingLot2_available, parkingLot3_available, parkingLot4_available);
+            oledDisplay.displayParkingSpots(parkingSpot1_available, parkingSpot2_available, parkingSpot3_available, parkingSpot4_available);
         }
     }    
 }
