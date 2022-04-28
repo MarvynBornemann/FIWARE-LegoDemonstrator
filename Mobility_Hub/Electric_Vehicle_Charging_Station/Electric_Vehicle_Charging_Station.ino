@@ -157,7 +157,7 @@ void loop() {
             }else remainingTimeForFullCharge1 = 0;
         }
         
-        if(!parkingSpot1_available){
+        if(!parkingSpot2_available){
             if(levelOfCharging2 != NUMBER_OF_LEVELS){
                 if(levelOfCharging2 != levelOfCharging2_old){
                     levelOfCharging2_old = levelOfCharging2;
