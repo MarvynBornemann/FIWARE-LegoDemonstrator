@@ -10,7 +10,8 @@ const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "WindEnergy-ESP8266EnergyBalance";
 
-const char* mqtt_energyBalance_topic = "/idFZy8D9KzFko7db/energyBalance001/attrs";
+const char* mqtt_energyGenerator_topic = "/idFZy8D9KzFko7db/GreenEnergyGenerator:Wind_Energy:1/attrs";
+const char* mqtt_energyConsumer_topic = "/idFZy8D9KzFko7db/EnergyConsumer:Wind_Energy:1/attrs";
 
 //OLED Display variables
 const int WIO_NODE_SCL1_PIN = 1;
@@ -37,6 +38,11 @@ DynamicJsonDocument jsonDoc(1024);
 long lastTime = 0;
 bool doOnce = false;
 
+float energyProduced = random(30000,50000)/10.0;
+float energyConsumed = random(50000,70000)/10.0;
+
+int counter = 0;
+
 void setup() {
   //Wio node -> make port available
   pinMode(15, OUTPUT);
@@ -58,14 +64,31 @@ void loop() {
   if(diffTime > 20000){
     lastTime = currentTime;
 
-    float energyProduced = random(10000,100000)/10.0;
-    float energyConsumed = random(10000,100000)/10.0;
+    counter++;
+    if(counter > 180){
+      counter = 0;
+      energyProduced = random(30000,50000)/10.0;
+      energyConsumed = random(50000,70000)/10.0;
+    }
 
-    oledDisplay1.display(energyProduced, "produced:");
+    int randomSign = random(0,10);
+    if(randomSign > 4){
+      energyProduced = energyProduced - (random(0,1000)/10.0);
+    }else{
+      energyProduced = energyProduced + (random(0,1000)/10.0);
+    }
+    int randomSign = random(0,10);
+    if(randomSign > 4){
+      energyConsumed = energyConsumed - (random(0,1000)/10.0);
+    }else{
+      energyConsumed = energyConsumed + (random(0,1000)/10.0);
+    }
+
+    oledDisplay1.display(energyProduced, "generated:");
     oledDisplay2.display(energyConsumed, "consumed:");
 
-    mqtt.send(mqtt_energyBalance_topic, "energyProduced", energyProduced);
-    mqtt.send(mqtt_energyBalance_topic, "energyConsumed", energyConsumed);
+    mqtt.send(mqtt_energyGenerator_topic, "maxEolicPowerGenerated", energyProduced);
+    mqtt.send(mqtt_energyConsumer_topic, "p", energyConsumed);
 
     doOnce = true;
 

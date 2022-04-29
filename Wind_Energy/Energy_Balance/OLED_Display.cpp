@@ -38,12 +38,12 @@ void OLED_Display::display(float energy, String energyType) {
     prepare();  
 
     //draw Data on display
-    oledDisplay->println("Energy");
+    oledDisplay->println("Power");
     oledDisplay->println(energyType);
     oledDisplay->drawLine(0, SCREEN_HEIGHT/2+3, SCREEN_WIDTH, SCREEN_HEIGHT/2+3, SSD1306_WHITE);
     oledDisplay->println("");
     oledDisplay->print(String(energy,1));
-    oledDisplay->println(" kwh");
+    oledDisplay->println(" kW");
 
     //update Display
     oledDisplay->display();
