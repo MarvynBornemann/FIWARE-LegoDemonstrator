@@ -17,7 +17,7 @@ const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "Basis1-ESP8266Temperature001";
 
-const char* mqtt_temperature_topic = "/idFZy8D9KzFko7db/temperature001/attrs";
+const char* mqtt_temperature_topic = "/idFZy8D9KzFko7db/WeatherObserved:Basis:1/attrs";
 const char* mqtt_windmills_cmd_topic = "/idFZy8D9KzFko7db/windmills001/cmd";
 const char* mqtt_windmills_cmdexe_topic = "/idFZy8D9KzFko7db/windmills001/cmdexe";
 
@@ -71,11 +71,13 @@ void loop() {
     Serial.print(heatIndex);
     Serial.println("C ");
 
+    float relativeHumidity = humidity / 100.0; //humidity between 0 and 1
+
     mqtt.send(mqtt_temperature_topic, "temperature", temperature);
     delay(500);
-    mqtt.send(mqtt_temperature_topic, "humidity", humidity);
+    mqtt.send(mqtt_temperature_topic, "relativeHumidity", relativeHumidity);
     delay(500);
-    mqtt.send(mqtt_temperature_topic, "heatIndex", heatIndex);
+    mqtt.send(mqtt_temperature_topic, "feelLikesTemperature", heatIndex);
     
     // Wait a few seconds between measurements.
     delay(1000);
