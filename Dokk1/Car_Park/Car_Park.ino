@@ -10,7 +10,7 @@ const char* mqtt_username = "LegoDemonstrator";
 const char* mqtt_password = "Lego12Demo34nstr56ator";
 const char* mqtt_client_id = "Dokk1-ESP8266CarPark";
 
-const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/carPark001/attrs";
+const char* mqtt_parkingLot_topic = "/idFZy8D9KzFko7db/OffStreetParking:Dokk1:1/attrs";
 
 //OLED Display variables
 const int WIO_NODE_SCL_PIN = 4;
@@ -33,7 +33,9 @@ DynamicJsonDocument jsonDoc(1024);
 long lastTime = 0;
 bool doOnce = false;
 
-int numberOfFreeParkingLots = 0;
+int availableSpotNumber = 0;
+
+const int totalSpotNumber = 1000;
 
 void setup() {
   //Wio node -> make port available
@@ -45,7 +47,7 @@ void setup() {
 
   mqtt.setup();
 
-  numberOfFreeParkingLots = random(300,600);
+  availableSpotNumber = random(300,600);
 }
 
 void loop() {
@@ -60,20 +62,21 @@ void loop() {
     int randomNumber = random(10);
 
     if(randomNumber > 4){
-      numberOfFreeParkingLots -= (randomNumber - 4);
+      availableSpotNumber -= (randomNumber - 4);
     }else{
-      numberOfFreeParkingLots += randomNumber;
+      availableSpotNumber += randomNumber;
     }
 
-    if(numberOfFreeParkingLots > 1000){
-      numberOfFreeParkingLots = 1000;
+    if(availableSpotNumber > totalSpotNumber){
+      availableSpotNumber = totalSpotNumber;
     }
-    if(numberOfFreeParkingLots < 0){
-      numberOfFreeParkingLots = 0;
+    if(availableSpotNumber < 0){
+      availableSpotNumber = 0;
     }
     
-    oledDisplay.drawBitmap(numberOfFreeParkingLots);
-    mqtt.send(mqtt_parkingLot_topic, "parkingLot", numberOfFreeParkingLots);
+    oledDisplay.drawBitmap(availableSpotNumber);
+    mqtt.send(mqtt_parkingLot_topic, "availableSpotNumber", availableSpotNumber);
+    mqtt.send(mqtt_parkingLot_topic, "occupiedSpotNumber", totalSpotNumber - availableSpotNumber);
 
     doOnce = true;
 
