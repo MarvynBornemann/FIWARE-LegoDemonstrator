@@ -59,7 +59,7 @@
 
 */
 
-
+/*
 //Defining parameters of MQTT
 const char* ssid = "LuxActiveKG_oha";                     //Wifi SSid
 const char* password = "connectustooha";                     //Wifi Password
@@ -67,6 +67,16 @@ const char* mqttServer = "5.196.95.208";              //IP address of Raspberry 
 const int mqttPort = 1883;
 const char* mqttUser = "";                             //MQTT  USER id
 const char* mqttPassword = "";                         //MQTT Password
+*/
+
+
+//Defining parameters of MQTT
+const char* ssid = "FIWARE_fair";                      //Wifi SSid
+const char* password = "!FIWARE!on!air!";              //Wifi Password
+const char* mqttServer = "46.17.108.109";              //IP address of Raspberry Pi which has my MQTT broker
+const int mqttPort = 1883;
+const char* mqttUser = "hackathon";                    //MQTT  USER id
+const char* mqttPassword = "hackathon1234";            //MQTT Password
 
 
 

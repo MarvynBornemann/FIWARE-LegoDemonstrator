@@ -77,7 +77,7 @@ void loop() {
     }else{
       energyProduced = energyProduced + (random(0,1000)/10.0);
     }
-    int randomSign = random(0,10);
+    randomSign = random(0,10);
     if(randomSign > 4){
       energyConsumed = energyConsumed - (random(0,1000)/10.0);
     }else{
