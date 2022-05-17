@@ -23,15 +23,12 @@ void MQTT::setup() {
     while(WiFi.status() != WL_CONNECTED){
         delay(500);
         Serial.print(".");
-        oledDisplay.println("...");
         if(i++ > 20) break;
     }
     if(WiFi.status() == WL_CONNECTED){
-        oledDisplay.println("WiFi connected!");
         Serial.println("");
         Serial.println("WiFi connected!");
     }else{
-        oledDisplay.println("WiFi is not connected!");
         Serial.println("");
         Serial.println("WiFi is not connected!");
     }
@@ -69,8 +66,6 @@ void MQTT::initWiFi() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(wifi_ssid, wifi_password);
     
-    oledDisplay.println("");
-    oledDisplay.println("Wait for WiFi... ");
     Serial.println("");
     Serial.print("Wait for WiFi...");
 }
@@ -110,27 +105,21 @@ void MQTT::mqtt_reconnect() {
     if(!client.connected() && (currentTime - lastTime > MQTT_RECONNECT_TIME * 1000)){
         lastTime = currentTime;
 
-        oledDisplay.println("Connecting MQTT ...");
         Serial.println("Connecting MQTT ...");
         if (client.connect(mqtt_client_id, mqtt_username, mqtt_password)) {
-            oledDisplay.println("MQTT connected!");
             Serial.println("MQTT connected!");
             // Subscribe
             for(auto topic = topics.begin(); topic != topics.end(); ++topic){
                 client.subscribe(*topic);
             }
-            delay(1000);
+            delay(100);
         } else {
             delay(100);
-            oledDisplay.println(String("failed, rc=" + String(client.state())));
             Serial.println(String("failed, rc=" + String(client.state())));
             delay(100);
             String string_retry = "try again in " + String(MQTT_RECONNECT_TIME) + " sec";
-            oledDisplay.println(string_retry);
-            oledDisplay.println("");
-            oledDisplay.println("");
             Serial.println(string_retry);
-            delay(1000);
+            delay(100);
         }
     }
 }

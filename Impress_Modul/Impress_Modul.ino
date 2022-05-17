@@ -48,7 +48,9 @@ const int numberOfForceSensorReadings = frequencyOfForceSensorReadings/frequency
 Force_Sensor forceSensor(FORCE_SENSOR1_PIN, FORCE_SENSOR2_PIN, alpha);
 
 //OLED Display variables
-OLED_Display oledDisplay;
+const int WIO_NODE_SCL_PIN = 22;
+const int WIO_NODE_SDA_PIN = 21;
+OLED_Display oledDisplay(WIO_NODE_SDA_PIN, WIO_NODE_SCL_PIN);
 
 //MQTT
 WiFiClient espClient;
@@ -67,7 +69,7 @@ LED_PWM ledPWM(LED_PWM_PIN);
 
 //-----------------------setup-----------------------------------------
 void setup() {
-    Serial.begin(115200);
+    //Serial.begin(115200);
     oledDisplay.setup();
 
     mqtt.setup();
@@ -107,7 +109,7 @@ void loop() {
         mqtt.send(mqtt_weight_topic, "weight", weight);
         mqtt.send(mqtt_weight_topic, "weightClass", weightClass);
         mqtt.send(mqtt_weight_topic, "price", price);
-        oledDisplay.display(weight, weightClass, price, forceSensor.getAvarageOfForceSensor1(),forceSensor.getAvarageOfForceSensor2());
+        oledDisplay.display(weight, price);
     }
 
     //update LEDs

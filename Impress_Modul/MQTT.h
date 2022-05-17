@@ -7,9 +7,7 @@
 #include <ArduinoJson.h>
 #include <vector>
 
-#include "OLED_Display.h"
-
-#define MQTT_RECONNECT_TIME 120 //in seconds
+#define MQTT_RECONNECT_TIME 10 //in seconds
 
 //JSON
 extern DynamicJsonDocument jsonDoc;
@@ -17,9 +15,6 @@ extern DynamicJsonDocument jsonDoc;
 //MQTT
 extern PubSubClient client;
 extern void mqttCallback(String topic);
-
-//OLED Display
-extern OLED_Display oledDisplay;
 
 
 class MQTT

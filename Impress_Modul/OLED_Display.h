@@ -2,29 +2,35 @@
 
 #include <Arduino.h>
 
-#include <U8g2lib.h>
 #include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
-#define NUMBER_OF_LINES 5
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 
-const char COPYRIGHT_SYMBOL[] = { 0xa9, '\0' };
+const unsigned char Euro_bits[] PROGMEM = {// 'Euro', 16x16px
+    0x00, 0x00, 0x00, 0x00, 0x00, 0xf8, 0x03, 0xfc, 0x06, 0x00, 0x0e, 0x00, 0x3f, 0xc0, 0x0c, 0x00, 
+    0x0c, 0x00, 0x3f, 0xc0, 0x0e, 0x00, 0x06, 0x00, 0x03, 0xfc, 0x00, 0xf8, 0x00, 0x00, 0x00, 0x00
+};
 
 class OLED_Display
 {
     private:
-        U8G2_SSD1306_128X64_NONAME_F_HW_I2C* u8g2;
+        Adafruit_SSD1306* oledDisplay;
 
-        String stringBuffer[NUMBER_OF_LINES];
-        int bufferIndex = 0;
+        int sdaPin;
+        int sclPin;
+        int screenAdress;
+
+        void prepare();
 
     public:
-        OLED_Display();
+        OLED_Display(int sdaPin, int sclPin, int screenAdress = 0x3C);
         ~OLED_Display();
         
         void setup();
-        void prepare();
 
-        void println(String string);
-
-        void display(float weight, int weightClass, int price, int AvarageOfForceSensor1, int AvarageOfForceSensor2);
+        void display(float weight, int price);
 };
