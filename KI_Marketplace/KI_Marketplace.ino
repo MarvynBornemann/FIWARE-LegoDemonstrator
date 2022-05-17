@@ -20,6 +20,7 @@ const char* mqtt_client_id = "ESP8266KIMarketplace";
 
 const char* mqtt_LED_cmd_topic = "/idFZy8D9KzFko7db/LED003/cmd";
 const char* mqtt_LED_cmdexe_topic = "/idFZy8D9KzFko7db/LED003/cmdexe";
+const char* mqtt_Video_cmd_topic = "/idFZy8D9KzFko7db/Video001/cmd";
 
 
 //-----------non-changeable-variables-----------------------------------

@@ -155,18 +155,21 @@ void LED_Simulation::simulation1(){
             nextSimulationStage(pause(TIME_OF_COLOR_WIPE));
             break;
         case 10:
+            mqtt.send(mqtt_Video_cmd_topic, "play", "");
+            nextSimulationStage(true);
+        case 11:
             ledStrip6->setColor(colorFirst);
             ledStrip6->setColorSecond(colorSecond);
             ledStripsFinished[0] = ledStrip6->colorWipe(TIME_OF_COLOR_WIPE, true, ledStrip6->getNumberOfLEDs() - 1);
             nextSimulationStage(ledStripsFinished[0]);
             break;
-        case 11:
+        case 12:
             ledRing->setColor(colorFirst);
             ledRing->setColorSecond(colorSecond);
             ledStripsFinished[0] = ledRing->colorWipeDouble(TIME_OF_COLOR_WIPE, ringIndexLEDStrip6, ringIndexFirst, ringIndexSecond);
             nextSimulationStage(ledStripsFinished[0]);
             break;
-        case 12:
+        case 13:
             if(!ledStripsFinished[0]){
                 ledStripFirst->setColor(colorFirst);
                 ledStripFirst->setColorSecond(colorSecond);
@@ -179,14 +182,14 @@ void LED_Simulation::simulation1(){
             } 
             nextSimulationStage((ledStripsFinished[0] && ledStripsFinished[1]));
             break;
-        case 13:
-            nextSimulationStage(pause(TIME_OF_PAUSE * 2));
-            break;
         case 14:
+            nextSimulationStage(pause(TIME_OF_VIDEO));
+            break;
+        case 15:
             clearAllStrips();
             nextSimulationStage(pause(TIME_OF_PAUSE));
             break;
-        case 15:
+        case 16:
             nextSimulation(1);
             break;
         default:

@@ -52,6 +52,18 @@ void MQTT::send(const char* topic, const char* sensor, float measurement) {
     }
 }
 
+void MQTT::send(const char* topic, const char* attribute, const char* string) {
+    if(client.connected()){
+        String responseMessage = ""; 
+        jsonDoc.clear();
+
+        jsonDoc[attribute] = string;
+        serializeJson(jsonDoc, responseMessage);
+
+        client.publish(topic, responseMessage.c_str());
+    }
+}
+
 //-------------private-------------------------
 
 //WiFi

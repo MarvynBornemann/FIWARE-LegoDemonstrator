@@ -5,6 +5,11 @@
 #include "LED_Strip.h"
 #include "MyServo.h"
 #include "RGB_LED.h"
+#include "MQTT.h"
+
+//MQTT
+extern MQTT mqtt;
+extern const char* mqtt_Video_cmd_topic;
 
 //Number of Simuations
 #define NUMBER_OF_SIMULATIONS 2
@@ -38,6 +43,7 @@
 #define TIME_OF_PAUSE 1000
 #define TIME_OF_SERVO 20
 #define TIME_OF_RAINBOW 10
+#define TIME_OF_VIDEO 66000
 
 
 //datastream for ledStrip

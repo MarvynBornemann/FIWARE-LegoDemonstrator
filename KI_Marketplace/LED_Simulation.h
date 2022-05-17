@@ -3,6 +3,11 @@
 #include <Arduino.h>
 
 #include "LED_Strip.h"
+#include "MQTT.h"
+
+//MQTT
+extern MQTT mqtt;
+extern const char* mqtt_Video_cmd_topic;
 
 //Number of Simuations
 #define NUMBER_OF_LED_SIMULATIONS 5
@@ -64,6 +69,7 @@ const int ringIndexLEDStrip6 = 0;
 #define TIME_OF_COLOR_WIPE 50
 #define TIME_OF_RAINBOW 10
 #define TIME_OF_PAUSE 1000
+#define TIME_OF_VIDEO 49000
 
 
 class LED_Simulation
